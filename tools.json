@@ -50,8 +50,7 @@
       "icon": "level"
     },
   ],
-  <!--DEV NOTES Unused tool icons that can be found in index DRILL, SAW, BALANCE, WRENCH, SCREWDRIVER, TAPE-MEASURE, PLIERS, CLAMP, PAINTBRUSH-->
-  "feedback": {
+    "feedback": {
     "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSej_Nmfg0_K-MjF7QFP-fe10dDKHizg8wqWH2HG00tAcn8RKg/formResponse",
     "fields": {
       "email": "entry.1509675414",

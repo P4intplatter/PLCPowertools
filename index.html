@@ -35,10 +35,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{o
 .sec::before,.sec::after{content:""; flex:1; border-top:4px double var(--ink)}
 section{margin-bottom:56px; scroll-margin-top:12px}
 .controls{display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; margin-bottom:24px}
-.search{flex:1 1 240px; min-width:0; padding:9px 12px; font:inherit; color:var(--ink); background:rgba(255,250,235,.6); border:2px solid var(--ink); border-radius:0}
+.search{flex:1 1 240px; min-width:0; padding:9px 12px; font:inherit; color:var(--ink);
+  background:rgba(255,250,235,.6); border:2px solid var(--brown); border-radius:8px;
+  box-shadow:0 4px 8px rgba(27,23,19,.25)}
 .chips{display:flex; flex-wrap:wrap; gap:8px}
-.chip{font:700 .8rem var(--slab); letter-spacing:.1em; text-transform:uppercase; padding:8px 14px; color:var(--ink); background:transparent; border:2px solid var(--ink); cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.chip{font:700 .8rem var(--slab); letter-spacing:.1em; text-transform:uppercase; padding:8px 14px;
+  color:var(--brown); background:rgba(255,250,235,.6); border:2px solid var(--brown); border-radius:8px;
+  cursor:pointer; box-shadow:0 4px 8px rgba(27,23,19,.25)}
+.chip:hover{transform:translateY(-1px); box-shadow:0 6px 10px rgba(27,23,19,.3)}
+.chip[aria-pressed="true"]{background:var(--brown); color:var(--paper); box-shadow:0 2px 4px rgba(27,23,19,.3)}
 .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:26px}
 .card{display:flex; flex-direction:column; padding:22px; background:rgba(255,250,235,.5); box-shadow:6px 6px 0 rgba(27,23,19,.2)}
 .head{display:flex; gap:14px; align-items:center; margin-bottom:12px}
@@ -65,7 +70,7 @@ details p{margin:8px 0 0}
 .prose h3{margin:22px 0 4px; font:700 1.05rem var(--slab); letter-spacing:.06em; text-transform:uppercase}
 .prose p{margin:0}
 footer{padding-top:18px; text-align:center; font-size:.9rem; color:var(--soft); border-top:4px double var(--ink)}
-@media (prefers-reduced-motion:no-preference){.btn,.chip{transition:background .15s}}
+@media (prefers-reduced-motion:no-preference){.btn,.chip{transition:background .15s, transform .15s, box-shadow .15s}}
 </style>
 </head>
 <body>

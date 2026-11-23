@@ -1,7 +1,6 @@
 {
   "site": {
-    "title": "PLC Power Tools",
-    "repo": "YOUR-GITHUB-USERNAME/YOUR-REPO-NAME"
+    "title": "PLC Power Tools"
   },
   "tools": [
     {
@@ -13,7 +12,7 @@
       "version": "4.11",
       "updated": "2026-11-22",
       "changelog": "First release.",
-      "icon": "balance"
+      "icon": "drill"
     },
     {
       "id": "accommodation-tracker",
@@ -24,7 +23,7 @@
       "version": "9.4",
       "updated": "2026-11-22",
       "changelog": "Now works fully offline (PDF reader built in). The Frontline bookmarklet only connects to this site.",
-      "icon": "drill"
+      "icon": "balance"
     },
     {
       "id": "score-merger",
@@ -50,5 +49,14 @@
       "note": "Saves your tests and rosters in this browser so you can reuse them. On a shared computer, use “Clear all saved tests” when you’re done.",
       "icon": "saw"
     }
-  ]
+  ],
+  "feedback": {
+    "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSej_Nmfg0_K-MjF7QFP-fe10dDKHizg8wqWH2HG00tAcn8RKg/formResponse",
+    "fields": {
+      "email": "entry.1509675414",
+      "tool": "entry.656782655",
+      "issue": "entry.1476486829",
+      "details": "entry.1517316317"
+    }
+  }
 }

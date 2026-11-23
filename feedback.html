@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback | PLC Power Tools</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter></svg>
+
+<div class="wrap">
+  <a class="back" href="index.html">&larr; PLC Power Tools</a>
+  <h1 class="sec">Send Feedback</h1>
+  <p class="tagline" style="margin:0 0 28px">Found a bug, or have an idea? Tell me what would make these tools better.</p>
+
+  <div class="card rough form">
+    <form id="form" novalidate>
+      <p class="note-line">What you type here is sent through Google Forms to the person who maintains these tools. <strong>Please don’t include student names or any student information.</strong></p>
+      <p class="note-line" id="setup" hidden>This form isn’t connected to its response sheet yet, so it can’t send anything.</p>
+
+      <div class="field">
+        <label for="email">Email address (optional)</label>
+        <input id="email" type="email" autocomplete="email">
+        <span class="hint">Only if you’d like a reply. It’s used for nothing else.</span>
+      </div>
+      <div class="field">
+        <label for="tool">Tool used</label>
+        <select id="tool" required><option value="" selected disabled>Choose a tool…</option></select>
+      </div>
+      <div class="field">
+        <label for="issue">Issue?</label>
+        <select id="issue" required>
+          <option value="" selected disabled>Choose one…</option>
+          <option>None</option>
+          <option>User Interface (UI)</option>
+          <option>Bug?</option>
+          <option>Request change/addition</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="details">Additional Details</label>
+        <textarea id="details" placeholder="What happened, or what would help? Details like your browser (Chrome, Edge, Safari) are useful for bugs."></textarea>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Leave this empty <input id="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <p class="note-line" id="err" role="alert" hidden>Couldn’t send. Check your internet connection and try again.</p>
+      <button class="btn primary" id="send" type="submit">Send feedback</button>
+    </form>
+
+    <div class="thanks" id="thanks" hidden>
+      <h2>Thank you!</h2>
+      <p>Your feedback is on its way.</p>
+      <p style="margin-top:18px"><a class="btn secondary" href="index.html">Back to the toolbox</a></p>
+    </div>
+  </div>
+  <footer>PLC Power Tools</footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let CFG = null;
+function addOption(sel, value, label, id){
+  const o = document.createElement("option");
+  o.value = value; o.textContent = label; if (id) o.dataset.id = id;
+  sel.append(o);
+}
+async function init(){
+  let tools = [];
+  try{
+    const d = await (await fetch("tools.json", {cache:"no-cache"})).json();
+    tools = d.tools || []; CFG = d.feedback || null;
+  }catch(e){}
+  tools.forEach(t => addOption($("tool"), t.title + " v" + t.version, t.title, t.id));
+  addOption($("tool"), "Other / the whole site", "Other / the whole site");
+  const want = new URLSearchParams(location.search).get("tool");
+  const m = [...$("tool").options].find(o => o.dataset.id === want);
+  if (m) $("tool").value = m.value;
+  if (!CFG || !CFG.formUrl || CFG.formUrl.includes("PASTE") || Object.values(CFG.fields||{}).some(v => v.includes("entry.000000"))){
+    $("setup").hidden = false; $("send").disabled = true;
+  }
+}
+$("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!$("form").reportValidity()) return;
+  if ($("website").value){ $("form").hidden = true; $("thanks").hidden = false; return; }
+  const btn = $("send"); btn.disabled = true; btn.textContent = "Sending…"; $("err").hidden = true;
+  const f = CFG.fields, b = new URLSearchParams();
+  b.set(f.email, $("email").value.trim());
+  b.set(f.tool, $("tool").value);
+  b.set(f.issue, $("issue").value);
+  b.set(f.details, $("details").value.trim());
+  try{
+    await fetch(CFG.formUrl, {method:"POST", mode:"no-cors", body:b});
+    $("form").hidden = true; $("thanks").hidden = false;
+  }catch(err){
+    $("err").hidden = false; btn.disabled = false; btn.textContent = "Send feedback";
+  }
+});
+init();
+</script>
+</body>
+</html>

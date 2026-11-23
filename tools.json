@@ -34,7 +34,7 @@
       "version": "2.6",
       "updated": "2026-11-22",
       "changelog": "Early version. Features may change as it’s tested.",
-      "note": "You can saves your tests and rosters in this browser for reuse. On a shared computer, make sure to use “Clear all saved tests” when you’re done.",
+      "note": "You can save your tests and rosters in this browser for reuse. On a shared computer, make sure to use “Clear all saved tests” when you’re done.",
       "icon": "hammer"
     },
       {
@@ -48,7 +48,7 @@
       "updated": "2026-11-22",
       "changelog": "Works, and now works fully offline (PDF reader built in). Requires you to be logged into Frontline, and use a temporary bookmarklet",
       "icon": "level"
-    },
+    }
   ],
     "feedback": {
     "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSej_Nmfg0_K-MjF7QFP-fe10dDKHizg8wqWH2HG00tAcn8RKg/formResponse",

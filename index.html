@@ -49,10 +49,7 @@
   <section id="about">
     <h2 class="sec">About These Tools</h2>
     <div class="prose">
-      <h1 style="text-align: center;">Centered Heading</h1>
-<p style="text-align: center;">Centered paragraph.</p>
-      <p>My name is Ryan Graham and I made these tools "by a teacher, for teachers," to help my PLC do less admin busywork and spend more time <i>actually teaching</i>! <br>I wanted to streamline they way we reviewed assessment data and accommodations in our ever growing diverse populations. <br> We're not being paid enough to be data analysts!</p>
-      <br><br>
+      <p>My name is Ryan Graham and I made these tools "by a teacher, for teachers," to help my PLC do less admin busywork and spend more time on their classes. I wanted to streamline they way we look at assessment data and accommodating our ever growing diverse populations. We're not being paid enough to be data analysts!</p>
       <p class="tagline"> I will try to update tools as feedback comes in, and each card shows the current version and what changed.</p>
     </div>
   </section>
@@ -67,7 +64,16 @@ const ICONS = {
   drill:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="k" d="M20 16h26c5 0 8 3 8 8v4c0 3-2 5-5 5H20z"/><path class="k" d="M36 33h12l-3 22H33z"/><rect class="l" x="10" y="19" width="10" height="14"/><path class="l" d="M10 26H3M7 22l-3 8"/><path class="pp" d="M28 19v6M34 19v6M40 19v6"/></svg>',
   saw:'<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="l" style="stroke-width:8;stroke-dasharray:6.5 5.02;stroke-linecap:butt" cx="32" cy="32" r="22"/><circle class="k" cx="32" cy="32" r="17"/><circle class="pf" cx="32" cy="32" r="4"/><path class="pp" d="M32 14v8M32 42v8M14 32h8M42 32h8"/></svg>',
   hammer:'<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(35 32 32)"><rect class="k" x="28" y="22" width="8" height="40" rx="2"/><rect class="k" x="14" y="8" width="36" height="14" rx="2"/><path class="k" d="M14 10Q5 12 3 22l8-3q2-4 3-3z"/><path class="pp" d="M32 30v26"/></g></svg>',
-  balance:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="l" d="M32 8v44M22 56h20M11 18h42M11 18l-8 20M11 18l8 20M53 18l-8 20M53 18l8 20"/><path class="k" d="M2 38h18q0 9-9 9t-9-9zM44 38h18q0 9-9 9t-9-9z"/><circle class="k" cx="32" cy="8" r="4"/></svg>'
+  balance:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="l" d="M32 8v44M22 56h20M11 18h42M11 18l-8 20M11 18l8 20M53 18l-8 20M53 18l8 20"/><path class="k" d="M2 38h18q0 9-9 9t-9-9zM44 38h18q0 9-9 9t-9-9z"/><circle class="k" cx="32" cy="8" r="4"/></svg>',
+  wrench:'<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(-45 32 32)"><rect class="k" x="28" y="22" width="8" height="40" rx="4"/><circle class="k" cx="32" cy="15" r="11"/><rect class="pf" x="28.5" y="2" width="7" height="12"/></g></svg>',
+  screwdriver:'<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(45 32 32)"><rect class="k" x="25" y="34" width="14" height="26" rx="5"/><path class="l" d="M32 34V6"/><path class="k" d="M28 8h8l-1-5h-6z"/><path class="pp" d="M30 40v14M34 40v14"/></g></svg>',
+  level:'<svg viewBox="0 0 64 64" aria-hidden="true"><rect class="k" x="4" y="22" width="56" height="20" rx="2"/><rect class="pf" x="21" y="27" width="22" height="10" rx="5"/><circle class="k" cx="32" cy="32" r="3"/><path class="l" style="stroke-width:1.5" d="M27 28v8M37 28v8"/><circle class="pf" cx="11" cy="32" r="3"/><circle class="pf" cx="53" cy="32" r="3"/></svg>',
+  "tape-measure":'<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="k" cx="28" cy="32" r="22"/><circle class="pf" cx="28" cy="32" r="11"/><circle class="k" cx="28" cy="32" r="4"/><rect class="k" x="40" y="42" width="22" height="7"/><rect class="k" x="61" y="39" width="3" height="12"/><path class="pp" d="M49 42v4M53 42v4M57 42v4"/></svg>',
+  pliers:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="l" style="stroke-width:5" d="M27 5l5 25M37 5l-5 25"/><path class="l" style="stroke-width:7" d="M32 30l-9 27M32 30l9 27"/><circle class="pf" cx="32" cy="30" r="3"/></svg>',
+  clamp:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="l" style="stroke-width:7;stroke-linejoin:round" d="M50 10H18q-8 0-8 8v28q0 8 8 8h32"/><path class="l" style="stroke-width:5" d="M36 61V24"/><rect class="k" x="30" y="19" width="12" height="5"/><path class="l" style="stroke-width:4" d="M28 61h16"/></svg>',
+  magnifier:'<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="l" style="stroke-width:6" cx="26" cy="26" r="16"/><path class="l" style="stroke-width:9" d="M38 38l20 20"/><path class="l" style="stroke-width:2" d="M17 22q3-6 9-7"/></svg>',
+  paintbrush:'<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(40 32 32)"><rect class="k" x="29" y="34" width="6" height="28" rx="3"/><rect class="k" x="26" y="24" width="12" height="11"/><path class="k" d="M26 24Q24 10 32 3Q40 10 38 24z"/><path class="pp" d="M27 30h10"/></g></svg>',
+  glue:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="k" d="M20 28h24q4 0 4 5v21q0 5-5 5H21q-5 0-5-5V33q0-5 4-5z"/><path class="k" d="M24 28l4-10h8l4 10z"/><path class="k" d="M29 18l3-14 3 14z"/><rect class="pf" x="21" y="36" width="22" height="14" rx="1"/><path class="l" style="stroke-width:2" d="M25 41h14M25 46h10"/><path class="pp" d="M25 25h14"/></svg>'
 };
 
 function el(tag, attrs, ...kids){

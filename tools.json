@@ -13,7 +13,7 @@
       "version": "4.11",
       "updated": "2026-11-22",
       "changelog": "First release.",
-      "icon": "drill"
+      "icon": "balance"
     },
     {
       "id": "accommodation-tracker",
@@ -24,7 +24,7 @@
       "version": "9.4",
       "updated": "2026-11-22",
       "changelog": "Now works fully offline (PDF reader built in). The Frontline bookmarklet only connects to this site.",
-      "icon": "balance"
+      "icon": "drill"
     },
     {
       "id": "score-merger",

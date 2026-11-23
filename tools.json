@@ -12,18 +12,7 @@
       "version": "4.11",
       "updated": "2026-11-22",
       "changelog": "First release.",
-      "icon": "drill"
-    },
-    {
-      "id": "accommodation-tracker",
-      "title": "Accommodation Report Builder",
-      "description": "Reads eSPED/504 PDFs to show which students and groups need which accommodations, by subject, so nothing gets missed on test day or in class.",
-      "category": "Student support",
-      "file": "tools/accommodation-tracker.html",
-      "version": "9.4",
-      "updated": "2026-11-22",
-      "changelog": "Now works fully offline (PDF reader built in). The Frontline bookmarklet only connects to this site.",
-      "icon": "balance"
+      "icon": "magnifier"
     },
     {
       "id": "score-merger",
@@ -34,7 +23,7 @@
       "version": "2.1",
       "updated": "2026-11-22",
       "changelog": "First release.",
-      "icon": "hammer"
+      "icon": "glue"
     },
     {
       "id": "missed-it",
@@ -45,10 +34,21 @@
       "version": "2.6",
       "updated": "2026-11-22",
       "changelog": "Early version. Features may change as it’s tested.",
+      "note": "You can saves your tests and rosters in this browser for reuse. On a shared computer, make sure to use “Clear all saved tests” when you’re done.",
+      "icon": "hammer"
+    },
+      {
+      "id": "accommodation-tracker",
+      "title": "Accommodation Report Builder",
+      "description": "Reads eSPED/504 PDFs to show which students and groups need which accommodations, by subject, so nothing gets missed on test day or in class.",
+      "category": "Student support",
+      "file": "tools/accommodation-tracker.html",
+      "version": "9.4",
       "status": "Beta",
-      "note": "Saves your tests and rosters in this browser so you can reuse them. On a shared computer, use “Clear all saved tests” when you’re done.",
-      "icon": "saw"
-    }
+      "updated": "2026-11-22",
+      "changelog": "Works, and now works fully offline (PDF reader built in). Requires you to be logged into Frontline, and use a temporary "bookmarklet",
+      "icon": "level"
+    },
   ],
   "feedback": {
     "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSej_Nmfg0_K-MjF7QFP-fe10dDKHizg8wqWH2HG00tAcn8RKg/formResponse",

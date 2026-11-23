@@ -6,74 +6,7 @@
 <title>PLC Power Tools</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<style>
-:root{
-  --paper:#eadfc4; --paper2:#d9c8a0; --ink:#1b1713; --soft:#4d4234; --rust:#8c2f1b; --mark:#e6c04f;
-  --slab:Rockwell,"Rockwell Nova","Roboto Slab",Clarendon,"Bookman Old Style",Georgia,serif;
-  --body:Charter,"Bitstream Charter","Sitka Text",Georgia,serif;
-}
-*{box-sizing:border-box}
-html{background:var(--paper2); scroll-behavior:smooth}
-body{margin:0; min-height:100vh; color:var(--ink); font:17px/1.6 var(--body);
-  background:radial-gradient(ellipse at 50% 25%,var(--paper) 45%,var(--paper2) 100%)}
-body::before{content:""; position:fixed; inset:0; pointer-events:none; opacity:.5; mix-blend-mode:multiply;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .17 0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")}
-.wrap{max-width:1040px; margin:0 auto; padding:32px 20px 48px}
-.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
-.rough{position:relative}
-.rough::before{content:""; position:absolute; inset:0; border:3px solid var(--ink); filter:url(#rough); pointer-events:none}
-.frame{padding:12px; background:rgba(255,250,235,.4)}
-.frame::after{content:""; position:absolute; inset:6px; border:1px solid var(--ink); pointer-events:none}
-.frame img{display:block; width:100%; height:auto}
-.tagline{margin:14px 0 0; text-align:center; font:italic 1.15rem var(--body); color:var(--soft)}
-nav{display:flex; justify-content:center; flex-wrap:wrap; margin:22px 0 30px; border-top:4px double var(--ink); border-bottom:4px double var(--ink)}
-nav a{padding:10px 26px; font:700 .95rem var(--slab); letter-spacing:.14em; text-transform:uppercase; color:var(--ink); text-decoration:none}
-nav a:hover{color:var(--rust)}
-a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--rust); outline-offset:2px}
-.promise{max-width:62ch; margin:0 auto 44px; text-align:center; font-size:1.15rem}
-.promise b{display:block; font:700 .8rem var(--slab); letter-spacing:.2em; text-transform:uppercase; color:var(--rust); margin-bottom:4px}
-.promise mark{background:linear-gradient(transparent 55%,var(--mark) 55%); color:inherit}
-.sec{display:flex; align-items:center; gap:18px; margin:0 0 24px; font:700 1.6rem var(--slab); letter-spacing:.1em; text-transform:uppercase}
-.sec::before,.sec::after{content:""; flex:1; border-top:4px double var(--ink)}
-section{margin-bottom:56px; scroll-margin-top:12px}
-.controls{display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; margin-bottom:24px}
-.search{flex:1 1 240px; min-width:0; padding:9px 12px; font:inherit; color:var(--ink);
-  background:rgba(255,250,235,.6); border:2px solid var(--brown); border-radius:8px;
-  box-shadow:0 4px 8px rgba(27,23,19,.25)}
-.chips{display:flex; flex-wrap:wrap; gap:8px}
-.chip{font:700 .8rem var(--slab); letter-spacing:.1em; text-transform:uppercase; padding:8px 14px;
-  color:var(--brown); background:rgba(255,250,235,.6); border:2px solid var(--brown); border-radius:8px;
-  cursor:pointer; box-shadow:0 4px 8px rgba(27,23,19,.25)}
-.chip:hover{transform:translateY(-1px); box-shadow:0 6px 10px rgba(27,23,19,.3)}
-.chip[aria-pressed="true"]{background:var(--brown); color:var(--paper); box-shadow:0 2px 4px rgba(27,23,19,.3)}
-.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:26px}
-.card{display:flex; flex-direction:column; padding:22px; background:rgba(255,250,235,.5); box-shadow:6px 6px 0 rgba(27,23,19,.2)}
-.head{display:flex; gap:14px; align-items:center; margin-bottom:12px}
-.plate{flex:none; width:70px; height:70px; display:grid; place-items:center; border:3px solid var(--ink); background:var(--paper)}
-.plate svg{width:50px; height:50px; color:var(--ink)}
-.k{fill:currentColor} .l{fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round} .pp{fill:none; stroke:var(--paper); stroke-width:2} .pf{fill:var(--paper)}
-.cat{margin:0 0 2px; font:700 .72rem var(--slab); letter-spacing:.14em; text-transform:uppercase; color:var(--rust)}
-.badge{margin-left:8px; padding:1px 7px; background:var(--mark); color:var(--ink)}
-.card h3{margin:0; font:700 1.25rem/1.2 var(--slab)}
-.desc{flex:1; margin:0 0 14px}
-.note-line{margin:0 0 14px; padding:8px 10px; font-size:.9rem; background:rgba(140,47,27,.09); border-left:4px solid var(--rust)}
-.meta{margin:0 0 14px; font-size:.85rem; color:var(--soft)}
-.actions{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
-.btn{display:inline-block; padding:9px 16px; font:700 .8rem var(--slab); letter-spacing:.12em; text-transform:uppercase; text-decoration:none; cursor:pointer; border:2px solid var(--ink)}
-.btn.primary{background:var(--ink); color:var(--paper)}
-.btn.secondary{background:transparent; color:var(--ink)}
-.btn:hover{background:var(--rust); border-color:var(--rust); color:var(--paper)}
-.link{font-size:.88rem; color:var(--soft)}
-details{margin-top:14px; padding-top:10px; font-size:.9rem; border-top:1px dashed var(--soft)}
-summary{cursor:pointer; color:var(--soft)}
-details p{margin:8px 0 0}
-.empty,.error{padding:22px; border:2px dashed var(--ink); background:rgba(255,250,235,.5)}
-.prose{max-width:64ch; margin:0 auto}
-.prose h3{margin:22px 0 4px; font:700 1.05rem var(--slab); letter-spacing:.06em; text-transform:uppercase}
-.prose p{margin:0}
-footer{padding-top:18px; text-align:center; font-size:.9rem; color:var(--soft); border-top:4px double var(--ink)}
-@media (prefers-reduced-motion:no-preference){.btn,.chip{transition:background .15s, transform .15s, box-shadow .15s}}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter></svg>
@@ -87,7 +20,7 @@ footer{padding-top:18px; text-align:center; font-size:.9rem; color:var(--soft); 
 <p class="tagline"> All tools copyright Ryan Graham, 2026.</p>
   </header>
 
-  <nav aria-label="Sections"><a href="#tools">Tools</a><a href="#help">Help</a><a href="#about">About</a></nav>
+  <nav aria-label="Sections"><a href="#tools">Tools</a><a href="#help">Help</a><a href="#about">About</a><a href="feedback.html">Feedback</a></nav>
 
   <p class="promise"><b>FERPA Notice</b><mark>Every tool provided here runs entirely in your own browser, using the local cache.</mark> Student data stays on your computer and is never uploaded or sent anywhere. If using a public computer, make sure to clear the browser and fully log out.</p>
 
@@ -125,7 +58,7 @@ footer{padding-top:18px; text-align:center; font-size:.9rem; color:var(--soft); 
 </div>
 
 <script>
-let TOOLS = [], REPO = "", activeCat = "All";
+let TOOLS = [], activeCat = "All";
 const $ = id => document.getElementById(id);
 const ICONS = {
   drill:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="k" d="M20 16h26c5 0 8 3 8 8v4c0 3-2 5-5 5H20z"/><path class="k" d="M36 33h12l-3 22H33z"/><rect class="l" x="10" y="19" width="10" height="14"/><path class="l" d="M10 26H3M7 22l-3 8"/><path class="pp" d="M28 19v6M34 19v6M40 19v6"/></svg>',
@@ -146,13 +79,6 @@ function fmtDate(s){
   const d = new Date(s + "T12:00:00");
   return isNaN(d) ? s : d.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
 }
-function feedbackUrl(t){
-  const q = new URLSearchParams({
-    title: "Feedback: " + t.title + " (v" + t.version + ")",
-    body: "**Tool:** " + t.title + " v" + t.version + "\n\n**What happened or what would help?**\n\n**Browser (Chrome, Edge, Safari...):**\n\n_Please do not include any student names or data._"
-  });
-  return "https://github.com/" + REPO + "/issues/new?" + q.toString();
-}
 async function download(t, btn){
   const label = btn.textContent;
   try{
@@ -170,7 +96,7 @@ function card(t){
   const open = el("a", {class:"btn primary", href:t.file + "?v=" + encodeURIComponent(t.version), text:"Open tool"});
   const dl = el("button", {class:"btn secondary", type:"button", text:"Download"});
   dl.addEventListener("click", () => download(t, dl));
-  const fb = el("a", {class:"link", href:feedbackUrl(t), target:"_blank", rel:"noopener", text:"Give feedback"});
+  const fb = el("a", {class:"link", href:"feedback.html?tool=" + encodeURIComponent(t.id), text:"Give feedback"});
   const cat = el("p",{class:"cat",text:t.category});
   if (t.status) cat.append(el("span",{class:"badge",text:t.status}));
   const head = el("div",{class:"head"});
@@ -211,7 +137,6 @@ async function init(){
     const r = await fetch("tools.json", {cache:"no-cache"});
     if (!r.ok) throw new Error("HTTP " + r.status);
     const data = await r.json();
-    REPO = (data.site && data.site.repo) || "";
     if (data.site && data.site.title){ $("site-title").textContent = data.site.title; document.title = data.site.title; }
     TOOLS = data.tools || [];
     renderChips(); render();

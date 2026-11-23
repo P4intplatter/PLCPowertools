@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLC Power Tools</title>
+<style>
+:root{
+  --paper:#eadfc4; --paper2:#d9c8a0; --ink:#1b1713; --soft:#4d4234; --rust:#8c2f1b; --mark:#e6c04f;
+  --slab:Rockwell,"Rockwell Nova","Roboto Slab",Clarendon,"Bookman Old Style",Georgia,serif;
+  --body:Charter,"Bitstream Charter","Sitka Text",Georgia,serif;
+}
+*{box-sizing:border-box}
+html{background:var(--paper2); scroll-behavior:smooth}
+body{margin:0; min-height:100vh; color:var(--ink); font:17px/1.6 var(--body);
+  background:radial-gradient(ellipse at 50% 25%,var(--paper) 45%,var(--paper2) 100%)}
+body::before{content:""; position:fixed; inset:0; pointer-events:none; opacity:.5; mix-blend-mode:multiply;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .17 0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:1040px; margin:0 auto; padding:32px 20px 48px}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.rough{position:relative}
+.rough::before{content:""; position:absolute; inset:0; border:3px solid var(--ink); filter:url(#rough); pointer-events:none}
+.frame{padding:12px; background:rgba(255,250,235,.4)}
+.frame::after{content:""; position:absolute; inset:6px; border:1px solid var(--ink); pointer-events:none}
+.frame img{display:block; width:100%; height:auto}
+.tagline{margin:14px 0 0; text-align:center; font:italic 1.15rem var(--body); color:var(--soft)}
+nav{display:flex; justify-content:center; flex-wrap:wrap; margin:22px 0 30px; border-top:4px double var(--ink); border-bottom:4px double var(--ink)}
+nav a{padding:10px 26px; font:700 .95rem var(--slab); letter-spacing:.14em; text-transform:uppercase; color:var(--ink); text-decoration:none}
+nav a:hover{color:var(--rust)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--rust); outline-offset:2px}
+.promise{max-width:62ch; margin:0 auto 44px; text-align:center; font-size:1.15rem}
+.promise b{display:block; font:700 .8rem var(--slab); letter-spacing:.2em; text-transform:uppercase; color:var(--rust); margin-bottom:4px}
+.promise mark{background:linear-gradient(transparent 55%,var(--mark) 55%); color:inherit}
+.sec{display:flex; align-items:center; gap:18px; margin:0 0 24px; font:700 1.6rem var(--slab); letter-spacing:.1em; text-transform:uppercase}
+.sec::before,.sec::after{content:""; flex:1; border-top:4px double var(--ink)}
+section{margin-bottom:56px; scroll-margin-top:12px}
+.controls{display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; margin-bottom:24px}
+.search{flex:1 1 240px; min-width:0; padding:9px 12px; font:inherit; color:var(--ink); background:rgba(255,250,235,.6); border:2px solid var(--ink); border-radius:0}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font:700 .8rem var(--slab); letter-spacing:.1em; text-transform:uppercase; padding:8px 14px; color:var(--ink); background:transparent; border:2px solid var(--ink); cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:26px}
+.card{display:flex; flex-direction:column; padding:22px; background:rgba(255,250,235,.5); box-shadow:6px 6px 0 rgba(27,23,19,.2)}
+.head{display:flex; gap:14px; align-items:center; margin-bottom:12px}
+.plate{flex:none; width:70px; height:70px; display:grid; place-items:center; border:3px solid var(--ink); background:var(--paper)}
+.plate svg{width:50px; height:50px; color:var(--ink)}
+.k{fill:currentColor} .l{fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round} .pp{fill:none; stroke:var(--paper); stroke-width:2} .pf{fill:var(--paper)}
+.cat{margin:0 0 2px; font:700 .72rem var(--slab); letter-spacing:.14em; text-transform:uppercase; color:var(--rust)}
+.badge{margin-left:8px; padding:1px 7px; background:var(--mark); color:var(--ink)}
+.card h3{margin:0; font:700 1.25rem/1.2 var(--slab)}
+.desc{flex:1; margin:0 0 14px}
+.note-line{margin:0 0 14px; padding:8px 10px; font-size:.9rem; background:rgba(140,47,27,.09); border-left:4px solid var(--rust)}
+.meta{margin:0 0 14px; font-size:.85rem; color:var(--soft)}
+.actions{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.btn{display:inline-block; padding:9px 16px; font:700 .8rem var(--slab); letter-spacing:.12em; text-transform:uppercase; text-decoration:none; cursor:pointer; border:2px solid var(--ink)}
+.btn.primary{background:var(--ink); color:var(--paper)}
+.btn.secondary{background:transparent; color:var(--ink)}
+.btn:hover{background:var(--rust); border-color:var(--rust); color:var(--paper)}
+.link{font-size:.88rem; color:var(--soft)}
+details{margin-top:14px; padding-top:10px; font-size:.9rem; border-top:1px dashed var(--soft)}
+summary{cursor:pointer; color:var(--soft)}
+details p{margin:8px 0 0}
+.empty,.error{padding:22px; border:2px dashed var(--ink); background:rgba(255,250,235,.5)}
+.prose{max-width:64ch; margin:0 auto}
+.prose h3{margin:22px 0 4px; font:700 1.05rem var(--slab); letter-spacing:.06em; text-transform:uppercase}
+.prose p{margin:0}
+footer{padding-top:18px; text-align:center; font-size:.9rem; color:var(--soft); border-top:4px double var(--ink)}
+@media (prefers-reduced-motion:no-preference){.btn,.chip{transition:background .15s}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter></svg>
+
+<div class="wrap">
+  <header>
+    <h1 class="sr" id="site-title">PLC Power Tools</h1>
+    <div class="frame rough"><img src="images/header.png" alt="Woodcut illustration of a workshop with a pegboard of tools, where a craftsman works at a bench beside a sign reading PLC Power Tools."></div>
+    <p class="tagline">Free classroom tools that run right in your browser.</p>
+  </header>
+
+  <nav aria-label="Sections"><a href="#tools">Tools</a><a href="#help">Help</a><a href="#about">About</a></nav>
+
+  <p class="promise"><b>Our promise</b><mark>Every tool here runs entirely in your own browser.</mark> Your student data stays on your computer and is never uploaded or sent anywhere.</p>
+
+  <section id="tools">
+    <h2 class="sec">The Tools</h2>
+    <div class="controls">
+      <input class="search" id="search" type="search" placeholder="Search tools" aria-label="Search tools">
+      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+    </div>
+    <div class="sr" id="status" role="status" aria-live="polite"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="help">
+    <h2 class="sec">Help</h2>
+    <div class="prose">
+      <h3>Using a tool</h3>
+      <p>Press <strong>Open tool</strong> and load your files as the tool asks. Everything happens on your computer, and nothing is uploaded.</p>
+      <h3>Saving a copy</h3>
+      <p><strong>Download</strong> saves a copy that works without internet. A saved copy won’t update itself, so check back here for newer versions.</p>
+      <h3>Something not working?</h3>
+      <p>Try a current version of Chrome, Edge, or Firefox. To report a problem or request a change, use <strong>Give feedback</strong> on the tool’s card (it opens a form on GitHub, which needs a free account). Please never include student names or data.</p>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2 class="sec">About These Tools</h2>
+    <div class="prose">
+      <p>These tools were made by a teacher, for teachers, to take the busywork out of looking at assessment data. They’re updated as feedback comes in, and each card shows its version and what changed.</p>
+    </div>
+  </section>
+
+  <footer>PLC Power Tools &middot; Student data stays on your computer.</footer>
+</div>
+
+<script>
+let TOOLS = [], REPO = "", activeCat = "All";
+const $ = id => document.getElementById(id);
+const ICONS = {
+  drill:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="k" d="M20 16h26c5 0 8 3 8 8v4c0 3-2 5-5 5H20z"/><path class="k" d="M36 33h12l-3 22H33z"/><rect class="l" x="10" y="19" width="10" height="14"/><path class="l" d="M10 26H3M7 22l-3 8"/><path class="pp" d="M28 19v6M34 19v6M40 19v6"/></svg>',
+  saw:'<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="l" style="stroke-width:8;stroke-dasharray:6.5 5.02;stroke-linecap:butt" cx="32" cy="32" r="22"/><circle class="k" cx="32" cy="32" r="17"/><circle class="pf" cx="32" cy="32" r="4"/><path class="pp" d="M32 14v8M32 42v8M14 32h8M42 32h8"/></svg>',
+  hammer:'<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(35 32 32)"><rect class="k" x="28" y="22" width="8" height="40" rx="2"/><rect class="k" x="14" y="8" width="36" height="14" rx="2"/><path class="k" d="M14 10Q5 12 3 22l8-3q2-4 3-3z"/><path class="pp" d="M32 30v26"/></g></svg>',
+  balance:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="l" d="M32 8v44M22 56h20M11 18h42M11 18l-8 20M11 18l8 20M53 18l-8 20M53 18l8 20"/><path class="k" d="M2 38h18q0 9-9 9t-9-9zM44 38h18q0 9-9 9t-9-9z"/><circle class="k" cx="32" cy="8" r="4"/></svg>'
+};
+
+function el(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})){
+    if (k === "text") e.textContent = v; else e.setAttribute(k, v);
+  }
+  kids.forEach(c => e.append(c));
+  return e;
+}
+function fmtDate(s){
+  const d = new Date(s + "T12:00:00");
+  return isNaN(d) ? s : d.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+}
+function feedbackUrl(t){
+  const q = new URLSearchParams({
+    title: "Feedback: " + t.title + " (v" + t.version + ")",
+    body: "**Tool:** " + t.title + " v" + t.version + "\n\n**What happened or what would help?**\n\n**Browser (Chrome, Edge, Safari...):**\n\n_Please do not include any student names or data._"
+  });
+  return "https://github.com/" + REPO + "/issues/new?" + q.toString();
+}
+async function download(t, btn){
+  const label = btn.textContent;
+  try{
+    const r = await fetch(t.file + "?v=" + encodeURIComponent(t.version), {cache:"no-cache"});
+    if (!r.ok) throw new Error(r.status);
+    const url = URL.createObjectURL(await r.blob());
+    const a = el("a", {href:url, download:t.file.split("/").pop()});
+    document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  }catch(e){
+    btn.textContent = "Download failed";
+    setTimeout(() => btn.textContent = label, 2500);
+  }
+}
+function card(t){
+  const open = el("a", {class:"btn primary", href:t.file + "?v=" + encodeURIComponent(t.version), text:"Open tool"});
+  const dl = el("button", {class:"btn secondary", type:"button", text:"Download"});
+  dl.addEventListener("click", () => download(t, dl));
+  const fb = el("a", {class:"link", href:feedbackUrl(t), target:"_blank", rel:"noopener", text:"Give feedback"});
+  const cat = el("p",{class:"cat",text:t.category});
+  if (t.status) cat.append(el("span",{class:"badge",text:t.status}));
+  const head = el("div",{class:"head"});
+  if (ICONS[t.icon]){ const p = el("span",{class:"plate"}); p.innerHTML = ICONS[t.icon]; head.append(p); }
+  head.append(el("div",{}, cat, el("h3",{text:t.title})));
+  const c = el("article", {class:"card rough"},
+    head,
+    el("p",{class:"desc",text:t.description}),
+    t.note ? el("p",{class:"note-line",text:t.note}) : "",
+    el("p",{class:"meta",text:"Version " + t.version + ", updated " + fmtDate(t.updated)}),
+    el("div",{class:"actions"}, open, dl, fb)
+  );
+  if (t.changelog) c.append(el("details",{}, el("summary",{text:"What’s new"}), el("p",{text:t.changelog})));
+  return c;
+}
+function render(){
+  const q = $("search").value.trim().toLowerCase();
+  const list = TOOLS.filter(t =>
+    (activeCat === "All" || t.category === activeCat) &&
+    (!q || (t.title + " " + t.description + " " + t.category).toLowerCase().includes(q)));
+  const g = $("grid"); g.replaceChildren();
+  if (!list.length) g.append(el("div",{class:"empty",text:"No tools match. Clear the search or choose another category."}));
+  else list.forEach(t => g.append(card(t)));
+  $("status").textContent = list.length + (list.length === 1 ? " tool shown" : " tools shown");
+}
+function renderChips(){
+  const cats = ["All", ...new Set(TOOLS.map(t => t.category))];
+  const box = $("chips"); box.replaceChildren();
+  if (cats.length < 3) return;
+  cats.forEach(c => {
+    const b = el("button",{class:"chip",type:"button","aria-pressed":String(c===activeCat),text:c});
+    b.addEventListener("click", () => { activeCat = c; renderChips(); render(); });
+    box.append(b);
+  });
+}
+async function init(){
+  try{
+    const r = await fetch("tools.json", {cache:"no-cache"});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const data = await r.json();
+    REPO = (data.site && data.site.repo) || "";
+    if (data.site && data.site.title){ $("site-title").textContent = data.site.title; document.title = data.site.title; }
+    TOOLS = data.tools || [];
+    renderChips(); render();
+    $("search").addEventListener("input", render);
+  }catch(e){
+    $("grid").append(el("div",{class:"error",text:"Couldn’t load the tool list. If you opened this file directly from your computer, publish it with GitHub Pages or a local web server instead, because browsers block loading tools.json from a local file."}));
+  }
+}
+init();
+</script>
+</body>
+</html>

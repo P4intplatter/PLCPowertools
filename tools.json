@@ -1,0 +1,54 @@
+{
+  "site": {
+    "title": "PLC Power Tools",
+    "repo": "YOUR-GITHUB-USERNAME/YOUR-REPO-NAME"
+  },
+  "tools": [
+    {
+      "id": "plc-test-analysis",
+      "title": "PLC Test Analysis",
+      "description": "Reads your test export and the test PDF to find the most-missed questions, then generates a reteach report for your team.",
+      "category": "Test analysis",
+      "file": "tools/plc-test-analysis.html",
+      "version": "4.11",
+      "updated": "2026-11-22",
+      "changelog": "First release.",
+      "icon": "drill"
+    },
+    {
+      "id": "accommodation-tracker",
+      "title": "Accommodation Report Builder",
+      "description": "Reads eSPED/504 PDFs to show which students and groups need which accommodations, by subject, so nothing gets missed on test day or in class.",
+      "category": "Student support",
+      "file": "tools/accommodation-tracker.html",
+      "version": "9.4",
+      "updated": "2026-11-22",
+      "changelog": "Now works fully offline (PDF reader built in). The Frontline bookmarklet only connects to this site.",
+      "icon": "balance"
+    },
+    {
+      "id": "score-merger",
+      "title": "Test Score Merger",
+      "description": "Combines test score exports from multiple class sections into one file, so you can analyze all your sections together.",
+      "category": "Data tools",
+      "file": "tools/score-merger.html",
+      "version": "2.1",
+      "updated": "2026-11-22",
+      "changelog": "First release.",
+      "icon": "hammer"
+    },
+    {
+      "id": "missed-it",
+      "title": "Missed It! Generator",
+      "description": "Builds a one-page report for each student showing the questions they missed, using your test software export and a blank test PDF.",
+      "category": "Student feedback",
+      "file": "tools/missed-it.html",
+      "version": "2.6",
+      "updated": "2026-11-22",
+      "changelog": "Early version. Features may change as it’s tested.",
+      "status": "Beta",
+      "note": "Saves your tests and rosters in this browser so you can reuse them. On a shared computer, use “Clear all saved tests” when you’re done.",
+      "icon": "saw"
+    }
+  ]
+}

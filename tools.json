@@ -33,7 +33,7 @@
       "id": "missed-it",
       "toolbox": "teacher",
       "title": "Missed It! Generator",
-      "description": "Builds a one-page report for students wth the questions they missed, using an Eduphoria export and a blank test PDF.",
+      "description": "Builds a one-page report for students with the questions they missed, using an Eduphoria export and a blank test PDF.",
       "category": "Student feedback",
       "file": "tools/missed-it.html",
       "version": "2.6",
@@ -54,14 +54,14 @@
       "updated": "2026-11-22",
       "changelog": "Early Version. Works, and now works fully offline (PDF reader built in). Requires you to be logged into Frontline, and use a temporary bookmarklet",
       "icon": "level"
-    }
+    },
     {
       "id": "nwea-summit",
       "toolbox": "teacher",
       "title": "MAP Growth to SummitK12",
       "description": "Uses MAP reports to identify strengths and weaknesses. These can be used for assigning Remedial or Extensions in SummitK12, as well as used for SPED 3-week surveys.",
       "category": "Student support",
-      "file": "tools/accommodation-tracker.html",
+      "file": "tools/nwea-summit.html",
       "version": "9.4",
       "status": "Unofficial: Not associated with SummitK12",
       "updated": "2026-11-22",

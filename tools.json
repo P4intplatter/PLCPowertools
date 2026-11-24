@@ -46,13 +46,14 @@
       "id": "accommodation-tracker",
       "toolbox": "teacher",
       "title": "Accommodation Report Builder",
-      "description": "Reads eSPED/504 PDFs to show which students and groups need which accommodations, by subject, so nothing gets missed on test day or in class.",
+      "description": "Quickly reads eSPED/504 PDFs. Requires you to be logged into Frontline, and use a temporary bookmarklet.",
       "category": "Student support",
       "file": "tools/accommodation-tracker.html",
       "version": "9.4",
       "status": "Beta",
       "updated": "2026-11-22",
-      "changelog": "Early Version. Works, and now works fully offline (PDF reader built in). Requires you to be logged into Frontline, and use a temporary bookmarklet",
+      "changelog": "Now works fully offline (PDF reader built in). ",
+      "note": "Use this tool to easily find testing accomodations.",
       "icon": "level"
     },
     {
@@ -66,6 +67,7 @@
       "status": "Unofficial",
       "updated": "2026-11-22",
       "changelog": "Early Version. May have changes after MOY and EOY MAP tests.",
+       "note": "Use this as part of CISD Science/Summit partnership.",
       "icon": "pliers"
     }
 

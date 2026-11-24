@@ -76,3 +76,17 @@ footer{padding-top:18px; text-align:center; font-size:.9rem; color:var(--soft); 
 .thanks{text-align:center}
 .thanks h2{font:700 1.5rem var(--slab); text-transform:uppercase; letter-spacing:.08em; margin:0 0 8px}
 [hidden]{display:none !important}
+
+/* ---- Toolboxes ---- */
+#tools > .sec{font-size:calc(1.6rem + 2pt)}
+.box-title{margin:0 0 20px; font:700 1.2rem var(--slab); letter-spacing:.08em; text-transform:uppercase; color:var(--brown)}
+.box-sub{margin-left:10px; font:italic 400 .95rem var(--body); letter-spacing:0; text-transform:none; color:var(--soft)}
+/* Woodgrain plank divider */
+.divider{position:relative; height:18px; margin:46px 0 42px; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='18'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .55' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .13 0 0 0 0 .07 0 0 0 0 .04 0 0 0 1.5 -.5'/%3E%3C/filter%3E%3Crect width='700' height='18' filter='url(%23g)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg,#7b5439 0%,var(--brown) 50%,#46301f 100%);
+  box-shadow:0 4px 0 rgba(27,23,19,.2)}
+.divider::after{content:""; position:absolute; top:50%; left:14%; width:44px; height:12px; transform:translateY(-50%);
+  border-radius:50%; border:1px solid rgba(27,23,19,.55);
+  background:radial-gradient(ellipse,#2e1e13 0 25%,#5a3e2b 26% 55%,transparent 70%)}

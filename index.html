@@ -20,9 +20,17 @@
 <p class="tagline"> All tools &copy; Ryan Graham, 2026.</p>
   </header>
 
-  <nav aria-label="Sections"><a href="#tools">Tools</a><a href="#help">Help</a><a href="#about">About</a><a href="feedback.html">Feedback</a></nav>
+  <nav aria-label="Sections"><a href="#tools">Tools</a><a href="#help">Help</a><a href="feedback.html">Feedback</a></nav>
 
-  <p class="promise"><b>FERPA Notice</b><mark>Every tool provided here runs entirely in your own browser, using the local cache.</mark> Nothing is stored on this site.<br> Student data stays on your computer and is never uploaded or sent anywhere. If using a public computer, make sure to clear the browser and fully log out.</p>
+
+  <section id="about">
+    <h2 class="sec">About These Tools</h2>
+    <div class="prose">
+      <p style="text-align: center;">My name is Ryan Graham and I made these tools "by a teacher, for teachers," to help my PLC do less admin busywork and spend more time <b>teaching!</b> <br> I wanted to streamline the way we reviewed assessment data and accommodate our ever growing diverse populations.<br> We're not being paid enough to be data analysts!</p>
+      <br><br>
+      <p class="tagline"> I will try to update tools as feedback comes in, and each card shows the current version and what changed.</p>
+    </div>
+  </section>
 
   <section id="tools">
     <h2 class="sec">Powertools</h2>
@@ -31,7 +39,7 @@
       <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
     </div>
     <div class="sr" id="status" role="status" aria-live="polite"></div>
-    <div class="grid" id="grid"></div>
+    <div id="boxes"></div>
   </section>
 
   <section id="help">
@@ -47,20 +55,20 @@
     </div>
   </section>
 
-  <section id="about">
-    <h2 class="sec">About These Tools</h2>
-    <div class="prose">
-      <p style="text-align: center;">My name is Ryan Graham and I made these tools "by a teacher, for teachers," to help my PLC do less admin busywork and spend more time <b>teaching!</b> <br> I wanted to streamline the way we reviewed assessment data and accommodate our ever growing diverse populations.<br> We're not being paid enough to be data analysts!</p>
-      <br><br>
-      <p class="tagline"> I will try to update tools as feedback comes in, and each card shows the current version and what changed.</p>
-    </div>
-  </section>
+
+  <p class="promise"><b>FERPA Notice</b><mark>Every tool provided here runs entirely in your own browser, using the local cache.</mark> Nothing is stored on this site.<br> Student data stays on your computer and is never uploaded or sent anywhere. If using a public computer, make sure to clear the browser and fully log out.</p>
 
   <footer>PLC Power Tools &middot; Work smarter, not harder. Site and tool design copyright Ryan Graham, 2026. Do not mass distribute without explicit permission. </footer>
 </div>
 
 <script>
 let TOOLS = [], activeCat = "All";
+const BOXES = [
+  {id:"plc",     title:"PLC Level Toolbox"},
+  {id:"teacher", title:"Individual Teacher Toolbox"},
+  {id:"junk",    title:"Junk Drawer", sub:"(you never know what might be useful...)",
+   empty:"Nothing in here yet... but give it time. Something useful is bound to turn up."}
+];
 const $ = id => document.getElementById(id);
 const ICONS = {
   drill:'<svg viewBox="0 0 64 64" aria-hidden="true"><path class="k" d="M20 16h26c5 0 8 3 8 8v4c0 3-2 5-5 5H20z"/><path class="k" d="M36 33h12l-3 22H33z"/><rect class="l" x="10" y="19" width="10" height="14"/><path class="l" d="M10 26H3M7 22l-3 8"/><path class="pp" d="M28 19v6M34 19v6M40 19v6"/></svg>',
@@ -125,12 +133,30 @@ function card(t){
 }
 function render(){
   const q = $("search").value.trim().toLowerCase();
+  const filtering = activeCat !== "All" || q !== "";
   const list = TOOLS.filter(t =>
     (activeCat === "All" || t.category === activeCat) &&
     (!q || (t.title + " " + t.description + " " + t.category).toLowerCase().includes(q)));
-  const g = $("grid"); g.replaceChildren();
-  if (!list.length) g.append(el("div",{class:"empty",text:"No tools match. Clear the search or choose another category."}));
-  else list.forEach(t => g.append(card(t)));
+  const root = $("boxes"); root.replaceChildren();
+  let shown = 0;
+  BOXES.forEach(b => {
+    const items = list.filter(t => (t.toolbox || "teacher") === b.id);
+    // Hide a toolbox with no matches; an empty box with a teaser only shows when nothing is filtered
+    if (!items.length && !(b.empty && !filtering)) return;
+    if (shown++) root.append(el("div",{class:"divider",role:"separator"}));
+    const title = el("h3",{class:"box-title"}, b.title);
+    if (b.sub) title.append(el("span",{class:"box-sub",text:b.sub}));
+    const box = el("div",{class:"toolbox"}, title);
+    if (items.length){
+      const g = el("div",{class:"grid"});
+      items.forEach(t => g.append(card(t)));
+      box.append(g);
+    } else {
+      box.append(el("div",{class:"empty",text:b.empty}));
+    }
+    root.append(box);
+  });
+  if (!shown) root.append(el("div",{class:"empty",text:"No tools match. Clear the search or choose another category."}));
   $("status").textContent = list.length + (list.length === 1 ? " tool shown" : " tools shown");
 }
 function renderChips(){
@@ -153,7 +179,7 @@ async function init(){
     renderChips(); render();
     $("search").addEventListener("input", render);
   }catch(e){
-    $("grid").append(el("div",{class:"error",text:"Couldn’t load the tool list. If you opened this file directly from your computer, publish it with GitHub Pages or a local web server instead, because browsers block loading tools.json from a local file."}));
+    $("boxes").append(el("div",{class:"error",text:"Couldn’t load the tool list. If you opened this file directly from your computer, publish it with GitHub Pages or a local web server instead, because browsers block loading tools.json from a local file."}));
   }
 }
 init();

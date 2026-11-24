@@ -55,6 +55,20 @@
       "changelog": "Early Version. Works, and now works fully offline (PDF reader built in). Requires you to be logged into Frontline, and use a temporary bookmarklet",
       "icon": "level"
     }
+    {
+      "id": "nwea-summit",
+      "toolbox": "teacher",
+      "title": "MAP Growth to SummitK12",
+      "description": "Uses MAP reports to identify strengths and weaknesses. These can be used for assigning Remedial or Extensions in SummitK12, as well as used for SPED 3-week surveys.",
+      "category": "Student support",
+      "file": "tools/accommodation-tracker.html",
+      "version": "9.4",
+      "status": "Unofficial: Not associated with SummitK12",
+      "updated": "2026-11-22",
+      "changelog": "Early Version. May have changes after MOY and EOY MAP tests.",
+      "icon": "pliers"
+    }
+
   ],
     "feedback": {
     "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSej_Nmfg0_K-MjF7QFP-fe10dDKHizg8wqWH2HG00tAcn8RKg/formResponse",

@@ -72,7 +72,7 @@
     },
       {
       "id": "pdf-editor",
-      "toolbox": "junk drawer",
+      "toolbox": "junk",
       "title": "SUPER basic pdf editor",
       "description": "No more googling for pdf editors. Type, erase, and save.",
       "category": "Student support",
@@ -82,7 +82,7 @@
       "updated": "2026-11-22",
       "changelog": ".",
       "note": "Use this tool to fill out pdfs!",
-      "icon": "level"
+      "icon": "paintbrush"
     }
   ],
     "feedback": {

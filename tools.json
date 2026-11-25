@@ -75,7 +75,7 @@
       "toolbox": "junk",
       "title": "SUPER basic pdf editor",
       "description": "No more googling for pdf editors. Type, erase, and save.",
-      "category": "Student support",
+      "category": "Data tools",
       "file": "tools/pdf-editor.html",
       "version": "1.0",
       "status": "Beta",

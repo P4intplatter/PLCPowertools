@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple PDF Editor</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, sans-serif; background: #e5e7eb; color: #111; }
+  #bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+         padding: 8px 12px; background: #fff; border-bottom: 1px solid #ccc; }
+  button, label.btn { font: inherit; padding: 6px 12px; border: 1px solid #bbb; border-radius: 6px; background: #f9fafb; cursor: pointer; }
+  button:hover, label.btn:hover { background: #eef2f7; }
+  button.on { background: #2563eb; color: #fff; border-color: #2563eb; }
+  button:disabled { opacity: .4; cursor: default; }
+  input[type=number] { width: 56px; padding: 5px; }
+  .sep { width: 1px; height: 24px; background: #ccc; }
+  #hint { margin-left: auto; font-size: 13px; color: #555; }
+  #pages { padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  #empty { margin: 80px auto; text-align: center; color: #555; }
+  .page { position: relative; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.25); }
+  .page canvas { display: block; }
+  .layer { position: absolute; inset: 0; }
+  body.text .layer { cursor: text; }
+  body.erase .layer { cursor: crosshair; }
+  .tb { position: absolute; }
+  .t { white-space: pre; line-height: 1.2; font-family: Helvetica, Arial, sans-serif;
+       outline: 1px dashed transparent; min-width: 10px; }
+  .tb:hover .t { outline-color: #93b4f5; }
+  .tb.sel .t { outline: 1px solid #2563eb; }
+  .handle { display: none; position: absolute; left: -1px; top: -18px; height: 18px; padding: 0 6px;
+            font: 12px/18px system-ui, sans-serif; background: #2563eb; color: #fff; cursor: move;
+            user-select: none; border-radius: 4px 4px 0 0; white-space: nowrap; }
+  .tb.sel .handle { display: block; }
+  .r { position: absolute; background: #fff; }
+  .r.sel { outline: 2px solid #2563eb; cursor: move; }
+  body.erase .r:not(.sel):hover { outline: 1px dashed #dc2626; }
+  body.erase .tb { pointer-events: none; }
+  body.text .r { pointer-events: none; }
+  .draw { position: absolute; background: rgba(220,38,38,.2); border: 1px dashed #dc2626; }
+</style>
+<style id="editor-tweaks">/*ED:{"#mErase":{"margin":"4px","padding":"7px","display":"block","border-color":"#b62f2f","border-width":"2px"},"#bar > label:nth-of-type(3)":{"width":"150px","text-align":"center"},"#color":{"text-align":"center"},"#size":{"border-radius":"1px"}}*/
+#mErase{margin:4px !important;padding:7px !important;display:block !important;border-color:#b62f2f !important;border-width:2px !important}
+#bar > label:nth-of-type(3){width:150px !important;text-align:center !important}
+#color{text-align:center !important}
+#size{border-radius:1px !important}
+</style>
+</head>
+<body class="text">
+<div id="bar">
+  <label class="btn">Open PDF<input id="file" type="file" accept="application/pdf" hidden=""></label>
+  <div class="sep"></div>
+  <button id="mText" class="on">Add text</button>
+  
+  <div class="sep"></div>
+  <label>Size <input id="size" type="number" value="14" min="4" max="200"></label>
+  <label>Font Color <input id="color" type="color" value="#000000"></label>
+  <button id="mErase">Erase selected area</button><div class="sep"></div>
+  <button id="undo" disabled="">Undo</button>
+  <button id="save" disabled="">Save PDF</button>
+  <span id="hint">Click on a page to type. Drag the blue tab to move. Empty a box to delete it.</span>
+</div>
+<div id="pages"><div id="empty">Open a PDF to get started.</div></div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const SCALE = 1.5;
+const $ = id => document.getElementById(id);
+let pdfBytes = null, fileName = 'document.pdf';
+let pageInfo = [];   // {w, h} in PDF points
+let edits = [];      // {page, type:'text'|'rect', el, x, y, w, h, size, color}
+let mode = 'text', selected = null, pdfDoc = null;
+
+const hints = {
+  text: 'Click a page to type. Drag the blue tab to move. Empty a box to delete it.',
+  erase: 'Drag to erase an area (text under it is permanently removed on save). Click one to move it; Delete removes it.'
+};
+function setMode(m) {
+  deselect();
+  mode = m;
+  document.body.className = m;
+  $('mText').classList.toggle('on', m === 'text');
+  $('mErase').classList.toggle('on', m === 'erase');
+  $('hint').textContent = hints[m];
+}
+$('mText').onclick = () => setMode('text');
+$('mErase').onclick = () => setMode('erase');
+setMode('text');
+
+function refreshButtons() { $('undo').disabled = !edits.length; }
+
+// ---------- Loading ----------
+$('file').addEventListener('change', async e => {
+  const f = e.target.files[0];
+  if (f) loadFile(f);
+  e.target.value = '';
+});
+async function loadFile(f) {
+  fileName = f.name;
+  pdfBytes = new Uint8Array(await f.arrayBuffer());
+  edits = []; pageInfo = []; refreshButtons();
+  const pagesEl = $('pages');
+  pagesEl.innerHTML = '';
+  try {
+    const pdf = pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice() }).promise;
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const vp = page.getViewport({ scale: SCALE });
+      const base = page.getViewport({ scale: 1 });
+      pageInfo.push({ w: base.width, h: base.height });
+      const wrap = document.createElement('div');
+      wrap.className = 'page';
+      wrap.style.width = vp.width + 'px';
+      wrap.style.height = vp.height + 'px';
+      const canvas = document.createElement('canvas');
+      canvas.width = vp.width; canvas.height = vp.height;
+      const layer = document.createElement('div');
+      layer.className = 'layer';
+      wrap.append(canvas, layer);
+      pagesEl.appendChild(wrap);
+      attachLayer(layer, i - 1);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    }
+    $('save').disabled = false;
+  } catch (err) {
+    pagesEl.innerHTML = '<div id="empty">Could not open that PDF (' + err.message + ')</div>';
+    $('save').disabled = true;
+  }
+}
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (f && f.type === 'application/pdf') loadFile(f);
+});
+
+// ---------- Editing ----------
+function attachLayer(layer, pageIdx) {
+  layer.addEventListener('mousedown', e => {
+    if (e.target !== layer) return;
+    const rect = layer.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    if (mode === 'text') {
+      e.preventDefault();
+      addText(layer, pageIdx, x, y);
+    } else {
+      startErase(layer, pageIdx, x, y, rect);
+    }
+  });
+}
+
+function addText(layer, pageIdx, x, y) {
+  const size = +$('size').value || 14, color = $('color').value;
+  const el = document.createElement('div');
+  el.className = 'tb';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  const handle = document.createElement('div');
+  handle.className = 'handle';
+  handle.contentEditable = 'false';
+  handle.textContent = '\u2725 move';
+  const txt = document.createElement('div');
+  txt.className = 't';
+  txt.contentEditable = 'true';
+  txt.style.fontSize = size * SCALE + 'px';
+  txt.style.color = color;
+  el.append(handle, txt);
+  const edit = { page: pageIdx, type: 'text', el, txt, x: x / SCALE, y: y / SCALE, size, color };
+  edits.push(edit);
+  layer.appendChild(el);
+  el.addEventListener('focusin', () => select(edit));
+  txt.addEventListener('blur', () => { if (!txt.innerText.trim()) removeEdit(edit); });
+  handle.addEventListener('mousedown', e => { e.preventDefault(); startDrag(edit, e); });
+  txt.focus();
+  refreshButtons();
+}
+
+function startErase(layer, pageIdx, x0, y0, lrect) {
+  const box = document.createElement('div');
+  box.className = 'draw';
+  layer.appendChild(box);
+  let x1 = x0, y1 = y0;
+  const draw = () => {
+    box.style.left = Math.min(x0, x1) + 'px'; box.style.top = Math.min(y0, y1) + 'px';
+    box.style.width = Math.abs(x1 - x0) + 'px'; box.style.height = Math.abs(y1 - y0) + 'px';
+  };
+  const move = e => {
+    x1 = Math.max(0, Math.min(lrect.width, e.clientX - lrect.left));
+    y1 = Math.max(0, Math.min(lrect.height, e.clientY - lrect.top));
+    draw();
+  };
+  const up = () => {
+    document.removeEventListener('mousemove', move);
+    document.removeEventListener('mouseup', up);
+    box.remove();
+    const w = Math.abs(x1 - x0), h = Math.abs(y1 - y0);
+    if (w < 4 || h < 4) return;
+    const el = document.createElement('div');
+    el.className = 'r';
+    el.style.cssText = `left:${Math.min(x0,x1)}px;top:${Math.min(y0,y1)}px;width:${w}px;height:${h}px`;
+    const edit = { page: pageIdx, type: 'rect', el,
+      x: Math.min(x0, x1) / SCALE, y: Math.min(y0, y1) / SCALE, w: w / SCALE, h: h / SCALE };
+    el.addEventListener('mousedown', e => {
+      if (mode !== 'erase') return;
+      e.preventDefault();
+      select(edit);
+      startDrag(edit, e);
+    });
+    layer.insertBefore(el, layer.firstChild); // keep text above white-outs
+    edits.push(edit);
+    select(edit);
+    refreshButtons();
+  };
+  document.addEventListener('mousemove', move);
+  document.addEventListener('mouseup', up);
+}
+
+function removeEdit(edit) {
+  edit.el.remove();
+  edits = edits.filter(e => e !== edit);
+  if (selected === edit) selected = null;
+  refreshButtons();
+}
+$('undo').onclick = () => { if (edits.length) removeEdit(edits[edits.length - 1]); };
+
+// ---------- Selection & moving ----------
+function select(edit) {
+  if (selected === edit) return;
+  deselect();
+  selected = edit;
+  edit.el.classList.add('sel');
+  if (edit.type === 'text') { $('size').value = edit.size; $('color').value = edit.color; }
+}
+function deselect() {
+  if (selected) { selected.el.classList.remove('sel'); selected = null; }
+}
+
+function startDrag(edit, e) {
+  const el = edit.el, layer = el.parentNode;
+  const lw = layer.clientWidth, lh = layer.clientHeight;
+  const ew = el.offsetWidth, eh = el.offsetHeight;
+  const sx = e.clientX, sy = e.clientY, ox = el.offsetLeft, oy = el.offsetTop;
+  const move = ev => {
+    const nx = Math.max(0, Math.min(lw - ew, ox + ev.clientX - sx));
+    const ny = Math.max(0, Math.min(lh - eh, oy + ev.clientY - sy));
+    el.style.left = nx + 'px';
+    el.style.top = ny + 'px';
+    edit.x = nx / SCALE;
+    edit.y = ny / SCALE;
+  };
+  const up = () => {
+    document.removeEventListener('mousemove', move);
+    document.removeEventListener('mouseup', up);
+  };
+  document.addEventListener('mousemove', move);
+  document.addEventListener('mouseup', up);
+}
+
+// Clicking anywhere outside the selected item (and outside the toolbar) clears the selection
+document.addEventListener('mousedown', e => {
+  if (!selected || e.target.closest('#bar') || selected.el.contains(e.target)) return;
+  deselect();
+}, true);
+
+document.addEventListener('keydown', e => {
+  const tag = document.activeElement && document.activeElement.tagName;
+  if (e.key === 'Escape') {
+    deselect();
+    if (document.activeElement) document.activeElement.blur();
+  } else if ((e.key === 'Delete' || e.key === 'Backspace') && selected && selected.type === 'rect' && tag !== 'INPUT') {
+    e.preventDefault();
+    removeEdit(selected);
+  }
+});
+
+// Size/color changes apply to the selected text box
+$('size').addEventListener('input', () => {
+  if (!selected || selected.type !== 'text') return;
+  selected.size = +$('size').value || 14;
+  selected.txt.style.fontSize = selected.size * SCALE + 'px';
+});
+$('color').addEventListener('input', () => {
+  if (!selected || selected.type !== 'text') return;
+  selected.color = $('color').value;
+  selected.txt.style.color = selected.color;
+});
+
+// ---------- Saving ----------
+// Replaces a page with a flat image (erased areas painted out, so the original text/graphics
+// there no longer exist in the file), then re-adds the text the boxes don't touch as invisible text.
+async function flattenPage(doc, idx, font) {
+  const page = await pdfDoc.getPage(idx + 1);
+  const vp1 = page.getViewport({ scale: 1 });
+  const W = vp1.width, H = vp1.height;
+  const s = Math.min(3, 6000 / Math.max(W, H));
+  const vp = page.getViewport({ scale: s });
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(vp.width);
+  canvas.height = Math.round(vp.height);
+  const ctx = canvas.getContext('2d');
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  const rects = edits.filter(e => e.type === 'rect' && e.page === idx);
+  ctx.fillStyle = '#fff';
+  rects.forEach(r => ctx.fillRect(r.x * s, r.y * s, r.w * s, r.h * s));
+  const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.92));
+  const img = await doc.embedJpg(await blob.arrayBuffer());
+  const np = doc.insertPage(idx, [W, H]);
+  np.drawImage(img, { x: 0, y: 0, width: W, height: H });
+  doc.removePage(idx + 1); // old page (and its text, annotations, etc.) is gone
+
+  const tc = await page.getTextContent();
+  for (const it of tc.items) {
+    if (!it.str || !it.str.trim()) continue;
+    const t = pdfjsLib.Util.transform(vp1.transform, it.transform);
+    const size = Math.max(1, Math.hypot(t[2], t[3]));
+    const ang = Math.atan2(t[1], t[0]), ux = Math.cos(ang), uy = Math.sin(ang);
+    const xs = [], ys = [];
+    for (const a of [0, it.width]) for (const b of [-0.3 * size, size]) {
+      xs.push(t[4] + ux * a + uy * b);
+      ys.push(t[5] + uy * a - ux * b);
+    }
+    const x0 = Math.min(...xs) - 1, x1 = Math.max(...xs) + 1;
+    const y0 = Math.min(...ys) - 1, y1 = Math.max(...ys) + 1;
+    // Any text item touching an erase box is dropped whole
+    if (rects.some(r => !(x1 < r.x || x0 > r.x + r.w || y1 < r.y || y0 > r.y + r.h))) continue;
+    const safe = [...it.str].map(c => { try { font.encodeText(c); return c; } catch { return '?'; } }).join('');
+    np.drawText(safe, { x: t[4], y: H - t[5], size, font, opacity: 0,
+                        rotate: PDFLib.degrees(-ang * 180 / Math.PI) });
+  }
+}
+
+const hexToRgb = h => {
+  const n = parseInt(h.slice(1), 16);
+  return PDFLib.rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+};
+$('save').onclick = async () => {
+  const suggested = fileName.replace(/\.pdf$/i, '') + '-edited.pdf';
+  let handle = null, name = suggested;
+  // Chrome/Edge: native "Save as" dialog (pick name and folder). Opened first so the click still counts as a user action.
+  if (window.showSaveFilePicker) {
+    try {
+      handle = await showSaveFilePicker({
+        suggestedName: suggested,
+        types: [{ description: 'PDF', accept: { 'application/pdf': ['.pdf'] } }]
+      });
+    } catch (err) {
+      if (err.name === 'AbortError') return; // user cancelled
+      handle = null;                          // picker unavailable, use fallback
+    }
+  }
+  // Other browsers (Firefox/Safari): ask for a name; the browser decides the folder
+  if (!handle) {
+    const input = prompt('Save as:', suggested);
+    if (!input) return;
+    name = /\.pdf$/i.test(input) ? input : input + '.pdf';
+  }
+  try {
+    const doc = await PDFLib.PDFDocument.load(pdfBytes);
+    const font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+    // Pages with erase boxes are flattened so the erased content is truly gone
+    const erasedPages = [...new Set(edits.filter(e => e.type === 'rect').map(e => e.page))];
+    for (const idx of erasedPages) await flattenPage(doc, idx, font);
+    const pages = doc.getPages();
+    for (const e of edits.filter(e => e.type === 'text')) {
+      const H = pageInfo[e.page].h;
+      const lines = e.txt.innerText.replace(/\n+$/, '').split('\n');
+      lines.forEach((line, i) => {
+        const safe = [...line].map(c => { try { font.encodeText(c); return c; } catch { return '?'; } }).join('');
+        pages[e.page].drawText(safe, {
+          x: e.x, y: H - (e.y + e.size * 0.947 + i * e.size * 1.2),
+          size: e.size, font, color: hexToRgb(e.color)
+        });
+      });
+    }
+    const out = await doc.save();
+    if (handle) {
+      const w = await handle.createWritable();
+      await w.write(out);
+      await w.close();
+    } else {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([out], { type: 'application/pdf' }));
+      a.download = name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    }
+  } catch (err) {
+    alert('Could not save: ' + err.message);
+  }
+};
+</script>
+
+
+</body></html>

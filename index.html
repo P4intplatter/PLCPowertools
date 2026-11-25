@@ -15,6 +15,13 @@ body > div:nth-of-type(1) > nav:nth-of-type(1) > a:nth-of-type(1){color:#000000 
 body > div:nth-of-type(1) > header:nth-of-type(1) > p:nth-of-type(2){display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center !important}
 body > div:nth-of-type(1) > header:nth-of-type(1) > p:nth-of-type(1){display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center !important}
 </style>
+<style id="card-tweaks">
+/* Status tag (Beta, Unofficial) sits at the top of the card */
+.badge-top{display:block;width:fit-content;margin:0 0 8px 0}
+/* Star in front of each note */
+.note-line{display:flex;align-items:flex-start;gap:8px}
+.note-star{color:#f2b705;-webkit-text-stroke:1px #1a1410;font-size:1.3em;line-height:1;flex:none}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter></svg>
@@ -136,18 +143,18 @@ function card(t){
   dl.addEventListener("click", () => download(t, dl));
   const fb = el("a", {class:"link", href:"feedback.html?tool=" + encodeURIComponent(t.id), text:"Give feedback"});
   const cat = el("p",{class:"cat",text:t.category});
-  if (t.status) cat.append(el("span",{class:"badge",text:t.status}));
+  const tag = t.status ? el("span",{class:"badge badge-top",text:t.status}) : "";
   const head = el("div",{class:"head"});
   if (ICONS[t.icon]){ const p = el("span",{class:"plate"}); p.innerHTML = ICONS[t.icon]; head.append(p); }
   head.append(el("div",{}, cat, el("h3",{text:t.title})));
   const c = el("article", {class:"card rough"},
+    tag,
     head,
     el("p",{class:"desc",text:t.description}),
-    t.note ? el("p",{class:"note-line",text:t.note}) : "",
+    t.note ? el("p",{class:"note-line"}, el("span",{class:"note-star","aria-hidden":"true",text:"\u2605"}), el("span",{text:t.note})) : "",
     el("p",{class:"meta",text:"Version " + t.version + ", updated " + fmtDate(t.updated)}),
     el("div",{class:"actions"}, open, dl, fb)
   );
-  if (t.changelog) c.append(el("details",{}, el("summary",{text:"What’s new"}), el("p",{text:t.changelog})));
   return c;
 }
 function render(){

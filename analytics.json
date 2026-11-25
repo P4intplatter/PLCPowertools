@@ -1,0 +1,17 @@
+{
+  "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfUUYVkkGoX20f60YXJ6xwRCtOhG7NxT2mxwezO7k5klyEzng/formResponse",
+  "fields": {
+    "tool": "entry.1700762835",
+    "action": "entry.1199882897",
+    "detail": "entry.837072402",
+    "device": "entry.1561038028",
+    "browser": "entry.175565896",
+    "source": "entry.180057375",
+    "visitor": "entry.1877242742"
+  },
+  "trackSearchText": true,
+  "dateOrder": "MDY",
+  "usageCsv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjeCclvXsIqIsFE-EKbu748clawWoHy9cNA-w_N6B2dL1HBxVn55pXaIJ7B4SsqUl_CufSsel6oKum/pub?gid=667808746&single=true&output=csv",
+  "feedbackCsv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSC4BYDSCiWmos99X5YMaK0DPGoOMdSzv-2WSZK9rQ9wf2Njifuv6hhIh9NvkdZhjOwKB1-oMMwQ0ci/pub?gid=1603438269&single=true&output=csv",
+  "feedbackSheetUrl": ""
+}

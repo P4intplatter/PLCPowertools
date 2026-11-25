@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<title>PLC Power Tools Stats</title><link rel="stylesheet" href="style.css">
+<style>
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:0 0 28px}
+.kpi{padding:14px;text-align:center;background:rgba(255,250,235,.5);border:3px solid var(--ink)}
+.kpi b{display:block;font:700 2rem var(--slab)}.kpi span{font:700 .72rem var(--slab);letter-spacing:.14em;text-transform:uppercase;color:var(--rust)}
+.bar{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:.9rem}.bar span{min-width:90px}.bar i{display:block;height:12px;background:var(--brown)}.bar em{font-style:normal;color:var(--soft)}
+table{width:100%;border-collapse:collapse;margin-bottom:28px;font-size:.92rem}th,td{padding:7px 9px;text-align:left;border-bottom:1px dashed var(--soft)}
+th{font:700 .75rem var(--slab);letter-spacing:.1em;text-transform:uppercase}.n{text-align:right}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px;margin-bottom:28px}
+h3.h{margin:0 0 8px;font:700 .95rem var(--slab);letter-spacing:.08em;text-transform:uppercase;color:var(--brown)}
+.controls label{font:700 .75rem var(--slab);letter-spacing:.1em;text-transform:uppercase}
+.controls input,.controls select{padding:7px;font:inherit;border:2px solid var(--brown);background:rgba(255,250,235,.6)}
+.fb{padding:8px 0;border-bottom:1px dashed var(--soft);font-size:.9rem}.tbl{overflow-x:auto}
+</style></head><body><div class="wrap">
+<h2 class="sec">Power Tools Stats</h2>
+<div class="controls">
+<label>From <input type="date" id="from"></label><label>To <input type="date" id="to"></label>
+<label>Tool <select id="tool"><option value="">All tools</option></select></label>
+<div class="chips"><button class="chip" data-d="1">Today</button><button class="chip" data-d="7">7 days</button><button class="chip" data-d="30">30 days</button><button class="chip" data-d="0">All time</button><button class="chip" id="ex"></button></div>
+</div>
+<p class="meta" id="msg"></p>
+<div class="kpis" id="kpis"></div>
+<h3 class="h">By tool</h3><div class="tbl" id="tools"></div>
+<div class="cols"><div><h3 class="h">Visits by device</h3><div id="b-device"></div></div><div><h3 class="h">Visits by browser</h3><div id="b-browser"></div></div>
+<div><h3 class="h">Where visits come from</h3><div id="b-source"></div></div><div><h3 class="h">New vs returning</h3><div id="b-visitor"></div></div>
+<div><h3 class="h">Searches</h3><div id="b-search"></div></div><div><h3 class="h">Searches with no results</h3><div id="b-nomatch"></div></div></div>
+<h3 class="h">Feedback</h3><div id="fb"></div>
+<p class="meta">Counts are button clicks on the main page and refresh about every 5 minutes. Anonymous data only.</p>
+</div>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let CFG={},TITLES={},U=[],F=[];
+const ymd=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function csv(t){const r=[];let row=[],f="",q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}else if(c=='"')q=true;else if(c==','){row.push(f);f=""}else if(c=='\n'){row.push(f);r.push(row);row=[];f=""}else if(c!='\r')f+=c}if(f||row.length){row.push(f);r.push(row)}return r}
+function pd(s){const m=s.match(/(\d+)\/(\d+)\/(\d+)/);if(m){const a=+m[1],b=+m[2],dmy=CFG.dateOrder==="DMY";return new Date(+m[3],(dmy?b:a)-1,dmy?a:b)}const d=new Date(s);return isNaN(d)?null:d}
+function load(u){return fetch(u+(u.includes("?")?"&":"?")+"t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{const r=csv(t),h=r.shift().map(x=>x.trim().toLowerCase());return r.filter(x=>x.length>1).map(x=>{const o={};h.forEach((k,i)=>o[k]=(x[i]||"").trim());o._d=pd(o.timestamp||"");return o})})}
+const inR=o=>{const a=$("from").value,b=$("to").value;if(!o._d)return false;const k=ymd(o._d);return(!a||k>=a)&&(!b||k<=b)};
+const tally=(rows,key)=>rows.reduce((m,o)=>{const k=o[key]||"(blank)";m[k]=(m[k]||0)+1;return m},{});
+function bars(m){const e=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8),mx=e[0]?e[0][1]:1;return e.length?e.map(([k,v])=>`<div class="bar"><span>${esc(k)}</span><i style="width:${Math.max(4,v/mx*140)}px"></i><em>${v}</em></div>`).join(""):"<p class='meta'>No data yet.</p>"}
+function render(){
+ const t=$("tool").value,all=U.filter(inR),sel=t?all.filter(o=>o.tool===t):all,by=a=>sel.filter(o=>o.action===a),vis=all.filter(o=>o.action==="visit");
+ $("kpis").innerHTML=[["Site visits",vis.length],["Tool opens",by("open").length],["Downloads",by("download").length],["Failed downloads",by("download_failed").length],["Feedback clicks",by("feedback_click").length]].map(([l,v])=>`<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join("");
+ const ids=[...new Set([...Object.keys(TITLES),...all.map(o=>o.tool)])].filter(x=>x&&x!=="index"&&(!t||x===t));
+ $("tools").innerHTML="<table><tr><th>Tool</th><th class=n>Opens</th><th class=n>Downloads</th><th class=n>Failed</th><th class=n>Feedback clicks</th><th>Last used</th></tr>"+ids.map(id=>{const r=all.filter(o=>o.tool===id),c=a=>r.filter(o=>o.action===a).length,l=r.filter(o=>o.action==="open"||o.action==="download").map(o=>o._d).sort((a,b)=>b-a)[0];return`<tr><td>${esc(TITLES[id]||id)}</td><td class=n>${c("open")}</td><td class=n>${c("download")}</td><td class=n>${c("download_failed")}</td><td class=n>${c("feedback_click")}</td><td>${l?l.toLocaleDateString():"-"}</td></tr>`}).join("")+"</table>";
+ ["device","browser","source","visitor"].forEach(k=>$("b-"+k).innerHTML=bars(tally(vis,k)));
+ $("b-search").innerHTML=bars(tally(all.filter(o=>o.action==="search"),"detail"));
+ $("b-nomatch").innerHTML=bars(tally(all.filter(o=>o.action==="search_nomatch"),"detail"));
+ const fr=F.filter(inR);
+ if(!CFG.feedbackCsv)$("fb").innerHTML=CFG.feedbackSheetUrl?`<p><a class="btn primary" href="${esc(CFG.feedbackSheetUrl)}" target="_blank" rel="noopener">Open feedback sheet</a></p>`:"<p class='meta'>Feedback not linked yet (see analytics.json).</p>";
+ else{const kt=Object.keys(F[0]||{}),col=re=>kt.find(k=>re.test(k)&&!/email|timestamp/.test(k));const ct=col(/tool/),ci=col(/issue|type|problem/),cd=col(/detail|message|comment|feedback/);
+  $("fb").innerHTML=`<p><b>${fr.length}</b> submissions in range.</p><div class="cols"><div>${bars(tally(fr,ct))}</div><div>${bars(tally(fr,ci))}</div></div>`+fr.slice().sort((a,b)=>b._d-a._d).slice(0,10).map(o=>`<div class="fb"><b>${esc(TITLES[o[ct]]||o[ct])}</b> · ${esc(o[ci])} · ${o._d.toLocaleDateString()}<br>${esc((o[cd]||"").slice(0,240))}</div>`).join("")}
+}
+function exTxt(){let on=false;try{on=localStorage.getItem("plc_notrack")==="1"}catch(e){}$("ex").textContent=on?"✓ This browser is excluded (click to include)":"Exclude this browser from tracking"}
+$("ex").onclick=()=>{try{localStorage.getItem("plc_notrack")==="1"?localStorage.removeItem("plc_notrack"):localStorage.setItem("plc_notrack","1")}catch(e){}exTxt()};
+function setDays(n){const e=new Date(),s=new Date();s.setDate(s.getDate()-(n-1));$("to").value=ymd(e);$("from").value=n?ymd(s):"";render()}
+document.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>setDays(+b.dataset.d));
+["from","to","tool"].forEach(i=>$(i).onchange=render);
+(async()=>{exTxt();
+ try{CFG=await(await fetch("analytics.json",{cache:"no-cache"})).json()}catch(e){}
+ try{((await(await fetch("tools.json",{cache:"no-cache"})).json()).tools||[]).forEach(t=>{TITLES[t.id]=t.title;$("tool").add(new Option(t.title,t.id))})}catch(e){}
+ setDays(30);
+ if(!CFG.usageCsv){$("msg").textContent="Setup needed: add the published CSV link as usageCsv in analytics.json.";return}
+ try{U=await load(CFG.usageCsv)}catch(e){$("msg").textContent="Couldn't load the usage data. Check the usageCsv link.";return}
+ if(CFG.feedbackCsv)try{F=await load(CFG.feedbackCsv)}catch(e){CFG.feedbackCsv="";$("msg").textContent="Couldn't load feedback data."}
+ render()})();
+</script></body></html>

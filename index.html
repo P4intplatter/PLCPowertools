@@ -145,7 +145,16 @@ function card(t){
   const cat = el("p",{class:"cat",text:t.category});
   const tag = t.status ? el("span",{class:"badge badge-top",text:t.status}) : "";
   const head = el("div",{class:"head"});
-  if (ICONS[t.icon]){ const p = el("span",{class:"plate"}); p.innerHTML = ICONS[t.icon]; head.append(p); }
+  if (t.icon){
+    const p = el("span",{class:"plate"});
+    const img = el("img",{src:"images/icons/" + t.icon + ".png", alt:"", loading:"lazy"});
+    // If the image file is missing, fall back to the old built-in drawing
+    img.addEventListener("error", () => {
+      if (ICONS[t.icon]) p.innerHTML = ICONS[t.icon]; else p.remove();
+    });
+    p.append(img);
+    head.append(p);
+  }
   head.append(el("div",{}, cat, el("h3",{text:t.title})));
   const c = el("article", {class:"card rough"},
     tag,

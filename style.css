@@ -42,6 +42,7 @@ section{margin-bottom:56px; scroll-margin-top:12px}
 .head{display:flex; gap:14px; align-items:center; margin-bottom:12px}
 .plate{flex:none; width:70px; height:70px; display:grid; place-items:center; border:3px solid var(--ink); background:var(--paper)}
 .plate svg{width:50px; height:50px; color:var(--ink)}
+.plate img{display:block; width:56px; height:56px; object-fit:contain}
 .k{fill:currentColor} .l{fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round} .pp{fill:none; stroke:var(--paper); stroke-width:2} .pf{fill:var(--paper)}
 .cat{margin:0 0 2px; font:700 .72rem var(--slab); letter-spacing:.14em; text-transform:uppercase; color:var(--rust)}
 .badge{margin-left:8px; padding:1px 7px; background:var(--mark); color:var(--ink)}

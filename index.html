@@ -16,8 +16,8 @@ body > div:nth-of-type(1) > header:nth-of-type(1) > p:nth-of-type(2){display:fle
 body > div:nth-of-type(1) > header:nth-of-type(1) > p:nth-of-type(1){display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center !important}
 </style>
 <style id="card-tweaks">
-/* Status tag (Beta, Unofficial) sits at the top of the card */
-.badge-top{display:block;width:fit-content;margin:0 0 8px 0}
+/* Status tag (Beta, Unofficial) sits between the note and the version line */
+.badge-top{display:block;width:fit-content;margin:0 0 10px 0;font:700 .72rem var(--slab);letter-spacing:.14em;text-transform:uppercase}
 /* Star in front of each note */
 .note-line{display:flex;align-items:flex-start;gap:8px}
 .note-star{color:#f2b705;-webkit-text-stroke:1px #1a1410;font-size:1.3em;line-height:1;flex:none}
@@ -157,10 +157,10 @@ function card(t){
   }
   head.append(el("div",{}, cat, el("h3",{text:t.title})));
   const c = el("article", {class:"card rough"},
-    tag,
     head,
     el("p",{class:"desc",text:t.description}),
     t.note ? el("p",{class:"note-line"}, el("span",{class:"note-star","aria-hidden":"true",text:"\u2605"}), el("span",{text:t.note})) : "",
+    tag,
     el("p",{class:"meta",text:"Version " + t.version + ", updated " + fmtDate(t.updated)}),
     el("div",{class:"actions"}, open, dl, fb)
   );

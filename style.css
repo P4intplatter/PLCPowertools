@@ -91,3 +91,13 @@ footer{padding-top:18px; text-align:center; font-size:.9rem; color:var(--soft); 
 .divider::after{content:""; position:absolute; top:50%; left:14%; width:44px; height:12px; transform:translateY(-50%);
   border-radius:50%; border:1px solid rgba(27,23,19,.55);
   background:radial-gradient(ellipse,#2e1e13 0 25%,#5a3e2b 26% 55%,transparent 70%)}
+
+/* ---- Line up card sections across each row ----
+   Each card has 6 slots: header, description, note, tag, version, buttons.
+   Subgrid makes every card in a row share the same row heights, so the
+   notes (and everything else) line up. Older browsers just keep the old layout. */
+@supports (grid-template-rows: subgrid){
+  .grid{row-gap:0}
+  .card{display:grid; grid-template-rows:subgrid; grid-row:span 6; row-gap:0; margin-bottom:26px}
+  .card .actions{align-self:start}
+}

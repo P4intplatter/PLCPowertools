@@ -290,7 +290,8 @@ function groups(rows){
  return[...m.values()].sort((a,b)=>a.student.localeCompare(b.student)||(a.l==='Unsorted')-(b.l==='Unsorted')||a.l.localeCompare(b.l));
 }
 const chipsOf=(set,small)=>SUBS.concat(['PE','FA']).filter(z=>set.has(z)&&(!SUBJ.size||SUBJ.has(z))).map(z=>`<span class="sc${SUBJ.has(z)?' on':''}">${z}</span>`).join('');
-const itemH=r=>`<div>${esc(r.desc)} <small class="mu">· ${esc(r.sec)}</small> ${chipsOf(new Set(r.subj))}</div>`;
+/* subject chips repeat the Subjects column, so only show them on a detail line when they differ from the group's */
+const itemH=(r,g)=>{const c=chipsOf(new Set(r.subj));return`<div>${esc(r.desc)} <small class="mu">· ${esc(r.sec)}</small> ${g&&c===chipsOf(g.subj)?'':c}</div>`};
 function vPrev(rows){
  if(!hasSel())return'<p class="mu">Pick a subject, an accommodation, or search a student to build the preview.</p>';
  if(!rows.length)return'<p class="mu">Nothing matches the current selection.</p>';
@@ -300,7 +301,7 @@ function vPrev(rows){
   const key=name+'|'+g.l,n=g.items.length,open=ALLOPEN||OPEN.has(key),one=g.l==='Unsorted'||n===1;
   h+=`<tr${i?'':' class="s1"'}>`+(i?'':`<td rowspan="${list.length}"><b>${esc(name)}</b><small class="mu">${esc(g.id)}</small></td>`)+
   `<td><span class="lb${ACC.has(g.l)?' on':''}"><b>${esc(g.l)}</b>${g.ds.length?': '+esc(g.ds.join(', ')):''}</span></td><td>${chipsOf(g.subj)}</td><td class="og">`+
-  (one?itemH(g.items[0]):`<button class="lk" data-o="${esc(key)}">${open?'Hide':'Show'} ${n} details</button>`+(open?`<div class="dl">${g.items.map(itemH).join('')}</div>`:''))+'</td></tr>';
+  (one?itemH(g.items[0],g):`<button class="lk" data-o="${esc(key)}">${open?'Hide':'Show'} ${n} details</button>`+(open?`<div class="dl">${g.items.map(x=>itemH(x,g)).join('')}</div>`:''))+'</td></tr>';
  }));
  return h+'</tbody></table></div>';
 }

@@ -17,6 +17,19 @@
       "icon": "magnifier"
     },
     {
+      "id": "question-filler",
+      "toolbox": "plc",
+      "title": "Eduphoria Question Filler",
+      "description": "Quickly fills an Eduphoria Multiple Choice (or multiple answer) question with a single copy/paste.",
+      "category": "Content Creation",
+      "file": "tools/question-filler.html",
+      "version": "1.1",
+      "updated": "2026-11-26",
+      "changelog": "New!",
+      "note": "Use this tool to build tests FASTER!",
+      "icon": "table_saw.png"
+    },
+    {
       "id": "score-merger",
       "toolbox": "teacher",
       "title": "Test Score Merger",

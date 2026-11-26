@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canvas Question Filler</title>
+<style>
+  :root{--bg:#f1f5f9;--card:#fff;--line:#d6dee6;--ink:#1e2933;--muted:#53626f;--blue:#3e6b8e;--blue-dk:#2f536f;--note:#eef4f9}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+  header{padding:18px 28px 14px;border-bottom:1px solid var(--line);background:#f6f9fb}
+  h1{margin:0;font:700 28px/1.2 Georgia,"Times New Roman",serif}
+  header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+  main{max-width:960px;padding:28px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:18px}
+  h2{margin:0 0 8px;font-size:18px}
+  h3{margin:16px 0 4px;font-size:15px}
+  p{margin:6px 0}
+  ol,ul{margin:6px 0;padding-left:22px}
+  li{margin:5px 0}
+  a{color:var(--blue)}
+  .btn{display:inline-block;background:var(--blue);color:#fff;border:0;border-radius:6px;padding:10px 18px;font:600 15px/1 inherit;font-family:inherit;cursor:pointer;text-decoration:none}
+  .btn:hover{background:var(--blue-dk)}
+  .btn.ghost{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+  .btn.ghost:hover{background:var(--note)}
+  .btn:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #f2b84b;outline-offset:2px}
+  .drag{font-size:18px;padding:14px 26px;cursor:grab;box-shadow:0 2px 0 var(--blue-dk)}
+  .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:12px 0}
+  .hint{background:var(--note);border-left:4px solid var(--blue);padding:8px 12px;border-radius:4px;margin:10px 0;font-size:14px}
+  pre{background:#f4f7fa;border:1px solid var(--line);border-radius:6px;padding:12px;margin:8px 0;white-space:pre-wrap;font:13px/1.5 Consolas,Menlo,monospace}
+  details{border-top:1px solid var(--line);padding:8px 0}
+  summary{cursor:pointer;font-weight:600}
+  kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;font:13px Consolas,Menlo,monospace}
+  #status{font-size:13px;color:var(--muted);min-height:1.4em}
+  @media(max-width:600px){main{padding:16px}header{padding:14px 16px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Canvas Question Filler</h1>
+  <p>Test building tool &middot; Version 1.0, updated Nov 26, 2026</p>
+</header>
+<main>
+
+<section class="card">
+  <h2>How to use this tool</h2>
+  <p>This bookmarklet tool allows you to type or paste <b>one question or a whole set of them</b> (question, answer choices, and correct answer) into a single box. Then the Question Filler builds the questions in Canvas for you: it fills in the fields, marks the right answer, sets the point value, turns on <b>Shuffle Choices</b>, and clicks <b>Done</b>. It is made for <b>Canvas New Quizzes</b> (the quiz screen with the Build, Settings, Moderate, and Reports tabs) and multiple choice questions. Always <b>double-check</b> before you publish.<br></p>
+  <ol>
+    <li>Add the Question Filler button to your browser's bookmarks bar (one time only, below).</li>
+    <li>In Canvas, open your quiz on the <b>Build</b> tab and then click the new bookmark. This opens the tool.</li>
+    <li>Paste your questions into the tool's input box, set the points, and click <b>Fill</b>. Sit back and watch it work!</li>
+    <li>Check everything, fix anything you want, then <b>publish</b> your quiz in Canvas!</li>
+  </ol>
+  <p>Make tests FASTER!</p>
+</section>
+
+<section class="card">
+  <h2>Step 1: Add it to your bookmarks bar (one time)</h2>
+  <ol>
+    <li>Show your bookmarks bar. (Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> (on a Mac: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>).) </li>
+    <li><b>Drag</b> this blue button below up onto that row, then let go. Do not click it here, only drag it.</li>
+    <li>You should now see <b>Canvas Question Filler</b> on your bookmarks bar! You will not need to do this again, it will work every time. Feel free to move it to a folder if you want, it will still work there too.</li>
+  </ol>
+  <div class="row">
+    <a id="bm" class="btn drag" href="javascript:!function()%7Bif(window.__cq)window.__cq.toggle()%3Belse%7Bvar%20t%3Dfunction(t)%7Breturn%20document.getElementById(t)%7D%2Ce%3Dfunction(t)%7Breturn%20new%20Promise(function(e)%7BsetTimeout(e%2Ct)%7D)%7D%2Cn%3Ddocument.createElement(%22div%22)%3Bn.id%3D%22__cq_panel%22%2Cn.style.cssText%3D%22position%3Afixed%3Bright%3A16px%3Btop%3A16px%3Bwidth%3A430px%3Bmax-width%3A96vw%3Bmax-height%3A94vh%3Boverflow%3Aauto%3Bz-index%3A2147483647%3Bbackground%3A%23fff%3Bborder%3A1px%20solid%20%23888%3Bborder-radius%3A8px%3Bbox-shadow%3A0%204px%2024px%20rgba(0%2C0%2C0%2C.35)%3Bfont%3A13px%2F1.4%20Arial%2Csans-serif%3Bcolor%3A%23222%22%2Cn.innerHTML%3D'%3Cdiv%20id%3D%22__cq_head%22%20style%3D%22cursor%3Amove%3Bbackground%3A%230b874b%3Bcolor%3A%23fff%3Bpadding%3A6px%2010px%3Bborder-radius%3A8px%208px%200%200%3Bdisplay%3Aflex%3Bjustify-content%3Aspace-between%3Buser-select%3Anone%22%3E%3Cb%3ECanvas%20Question%20Filler%20%3Cspan%20style%3D%22font-weight%3Anormal%3Bfont-size%3A11px%22%3E(drag%20%2F%20click%20to%20collapse)%3C%2Fspan%3E%3C%2Fb%3E%3Cspan%20id%3D%22__cq_x%22%3E%26%239662%3B%3C%2Fspan%3E%3C%2Fdiv%3E%3Cdiv%20id%3D%22__cq_body%22%20style%3D%22padding%3A8px%22%3E%3Cdiv%20style%3D%22margin%3A0%200%204px%3Bfont-size%3A12px%3Bcolor%3A%23555%22%3EPaste%20one%20or%20many%20questions.%20Each%20ends%20with%20its%20Answer%20line%3A%3C%2Fdiv%3E%3Ctextarea%20id%3D%22__cq_txt%22%20rows%3D%2224%22%20style%3D%22width%3A100%25%3Bbox-sizing%3Aborder-box%3Bfont%3A12px%20monospace%22%20placeholder%3D%22Question%20text%5CnA.%20option%5CnB.%20option%5CnC.%20option%5CnD.%20option%5CnAnswer%3A%20C%5Cn%5Cn%20%20%20%20%20(or)%5Cn%5CnQuestion%20text%5CnA.%20option%5CnB.%20option%5CnC.%20option%5CnD.%20option%5CnAnswer%3A%20C%5CnPoints%3A%202%22%3E%3C%2Ftextarea%3E%3Cdiv%20id%3D%22__cq_info%22%20style%3D%22font-size%3A12px%3Bcolor%3A%230b874b%3Bmargin%3A2px%200%22%3E%3C%2Fdiv%3E%3Cdiv%20style%3D%22margin%3A6px%200%3Bdisplay%3Aflex%3Bgap%3A8px%3Balign-items%3Acenter%3Bflex-wrap%3Awrap%22%3E%3Clabel%3EPoints%20%3Cselect%20id%3D%22__cq_pmode%22%3E%3Coption%20value%3D%22each%22%3Eeach%20question%3C%2Foption%3E%3Coption%20value%3D%22total%22%3Etotal%20for%20all%3C%2Foption%3E%3C%2Fselect%3E%20%3Cinput%20id%3D%22__cq_pts%22%20type%3D%22number%22%20min%3D%220%22%20step%3D%220.1%22%20value%3D%221%22%20style%3D%22width%3A65px%22%3E%3C%2Flabel%3E%3Cbutton%20id%3D%22__cq_tpl%22%20type%3D%22button%22%20style%3D%22padding%3A4px%208px%3Bcursor%3Apointer%22%3ECopy%20Question%20Template%3C%2Fbutton%3E%3Clabel%3ETitle%20prefix%20%3Cinput%20id%3D%22__cq_title%22%20type%3D%22text%22%20placeholder%3D%22(optional)%22%20style%3D%22width%3A110px%22%3E%3C%2Flabel%3E%3C%2Fdiv%3E%3Cdiv%20style%3D%22margin%3A4px%200%22%3E%3Clabel%3E%3Cinput%20id%3D%22__cq_shuf%22%20type%3D%22checkbox%22%20checked%3E%20Shuffle%20choices%3C%2Flabel%3E%20%26nbsp%3B%20%3Clabel%3E%3Cinput%20id%3D%22__cq_done%22%20type%3D%22checkbox%22%20checked%3E%20Click%20Done%20when%20finished%3C%2Flabel%3E%20%26nbsp%3B%20%3Clabel%3E%3Cinput%20id%3D%22__cq_clr%22%20type%3D%22checkbox%22%20checked%3E%20Clear%20box%20after%3C%2Flabel%3E%3C%2Fdiv%3E%3Cbutton%20id%3D%22__cq_fill%22%20style%3D%22background%3A%230b874b%3Bcolor%3A%23fff%3Bborder%3A0%3Bpadding%3A5px%2014px%3Bborder-radius%3A4px%3Bcursor%3Apointer%22%3EFill%3C%2Fbutton%3E%20%3Cbutton%20id%3D%22__cq_close%22%20style%3D%22padding%3A5px%2010px%3Bcursor%3Apointer%3Bfloat%3Aright%22%3EClose%3C%2Fbutton%3E%3Cdiv%20id%3D%22__cq_msg%22%20style%3D%22clear%3Aboth%3Bmargin-top%3A6px%3Bfont-size%3A12px%3Bcolor%3A%23555%3Bwhite-space%3Apre-wrap%22%3E%3C%2Fdiv%3E%3Cdiv%20style%3D%22margin-top%3A8px%3Bfont-style%3Aitalic%3Bfont-size%3A13px%3Bcolor%3A%23222%22%3EAlways%20double%20check%20prefilled%20responses%20for%20accuracy%3C%2Fdiv%3E%3C%2Fdiv%3E'%2Cdocument.body.appendChild(n)%3Bvar%20r%3Dfunction(e)%7Bt(%22__cq_msg%22).textContent%3De%7D%2Ci%3D!0%2Co%3Dnull%2Ca%3D!1%3Bt(%22__cq_head%22).addEventListener(%22mousedown%22%2Cfunction(t)%7Bvar%20e%3Dn.getBoundingClientRect()%3Bo%3D%7Bdx%3At.clientX-e.left%2Cdy%3At.clientY-e.top%2Csx%3At.clientX%2Csy%3At.clientY%7D%2Ca%3D!1%2Ct.preventDefault()%7D)%2Cdocument.addEventListener(%22mousemove%22%2Cfunction(t)%7Bo%26%26(Math.abs(t.clientX-o.sx)%2BMath.abs(t.clientY-o.sy)%3E3%26%26(a%3D!0)%2Ca%26%26(n.style.right%3D%22auto%22%2Cn.style.left%3DMath.max(0%2Ct.clientX-o.dx)%2B%22px%22%2Cn.style.top%3DMath.max(0%2Ct.clientY-o.dy)%2B%22px%22))%7D)%2Cdocument.addEventListener(%22mouseup%22%2Cfunction()%7Bo%26%26!a%26%26(i%3D!i%2Ct(%22__cq_body%22).style.display%3Di%3F%22%22%3A%22none%22%2Ct(%22__cq_x%22).innerHTML%3Di%3F%22%26%239662%3B%22%3A%22%26%239652%3B%22)%2Co%3Dnull%7D)%2Ct(%22__cq_tpl%22).onclick%3Dfunction()%7Bvar%20t%3D%22Question%20text%5CnA.%20option%5CnB.%20option%5CnC.%20option%5CnD.%20option%5CnAnswer%3A%20C%22%2Ce%3Dfunction()%7Br(%22Question%20template%20copied%20to%20the%20clipboard.%22)%7D%2Cn%3Dfunction()%7Bvar%20n%3Ddocument.createElement(%22textarea%22)%3Bn.value%3Dt%2Cn.style.cssText%3D%22position%3Afixed%3Bleft%3A-9999px%3Btop%3A0%22%2Cdocument.body.appendChild(n)%2Cn.select()%3Bvar%20i%3D!1%3Btry%7Bi%3Ddocument.execCommand(%22copy%22)%7Dcatch(t)%7B%7Dn.remove()%2Ci%3Fe()%3Ar(%22Could%20not%20access%20the%20clipboard.%20Template%3A%5Cn%22%2Bt)%7D%3Bnavigator.clipboard%26%26navigator.clipboard.writeText%3Fnavigator.clipboard.writeText(t).then(e%2Cn)%3An()%7D%2Ct(%22__cq_close%22).onclick%3Dfunction()%7Bn.remove()%2Cdelete%20window.__cq%7D%2Cwindow.__cq%3D%7Btoggle%3Afunction()%7Bn.style.display%3D%22none%22%3D%3D%3Dn.style.display%3F%22%22%3A%22none%22%7D%7D%3Bvar%20l%3D%2F%5E(%5C*%3F)%5Cs*%5C(%3F(%5BA-Ha-h%5D)%5B%5C.%5C)%5C%3A%5D%5Cs%2B(.%2B)%24%2F%2Cc%3D%2F%5E(%3F%3Acorrect%5Cs%2B)%3Fanswers%3F%5Cs*(%3F%3Ais%7Care)%3F%5Cs*%5B%3A%5C-%5D%5Cs*(.%2B)%24%2Fi%2Cs%3D%2F%5E(%3F%3A%5C(%3F%5BA-Ha-h%5D%5C)%3F%5Cs%2B)%3F(%3F%3Arationale%7Cexplanation)%5Cs*(%3F%3A%5C(%3F%5BA-Ha-h%5D%5C)%3F)%3F%5Cs*%5B%3A%5C-%5D%2Fi%2Cu%3D%2F%5Epoints%3F%5Cs*%5B%3A%3D%5D%5Cs*(%5Cd*%5C.%3F%5Cd%2B)%5Cs*(%3F%3Apts%3F%7Cpoints%3F)%3F%5C.%3F%24%2Fi%2Cp%3Dfunction(t)%7Bvar%20e%3Dt.toUpperCase().replace(%2F%5CbAND%5Cb%2Fg%2C%22%20%22)%3Breturn%2F%5E%5BA-H%5D(%3F%3A%5Cs*%5B%2C%26%3B%5D%3F%5Cs*%5BA-H%5D)*%5C.%3F%24%2F.test(e)%3Fe.match(%2F%5BA-H%5D%2Fg)%7C%7C%5B%5D%3Anull%7D%2Cf%3Dfunction(t)%7Breturn%20String(t%2F10)%7D%3B%5B%22__cq_txt%22%2C%22__cq_pts%22%5D.forEach(function(e)%7Bt(e).addEventListener(%22input%22%2Cfunction()%7Bt(%22__cq_info%22).textContent%3Dw()%7D)%7D)%2Ct(%22__cq_pmode%22).addEventListener(%22change%22%2Cfunction()%7Bt(%22__cq_info%22).textContent%3Dw()%7D)%2Ct(%22__cq_info%22).style.whiteSpace%3D%22pre-wrap%22%3Bvar%20d%3Dfunction(t)%7Breturn%20n.contains(t)%7D%2Ch%3Dfunction(t)%7Breturn%20t.getBoundingClientRect()%7D%2Cm%3Dfunction(t)%7Bvar%20e%3Dh(t)%3Breturn%20e.width%3E0%26%26e.height%3E0%7D%2Cv%3Dfunction()%7Breturn!!k(%2F%5EQuestion%20Stem%2Fi)%7D%2C_%3D!1%3Bt(%22__cq_fill%22).onclick%3Dfunction()%7B_%7C%7C(_%3D!0%2Casync%20function()%7Bvar%20n%3Dg(t(%22__cq_txt%22).value)%2Ci%3Dn.map(b)%2Co%3Di.length%3Bif(o)%7Bfor(var%20a%3D0%3Ba%3Co%3Ba%2B%2B)if(i%5Ba%5D.opts.length%3C2)return%20void%20r(%22Question%20%22%2B(a%2B1)%2B'%20(%22'%2B(i%5Ba%5D.stem%7C%7Cn%5Ba%5D).slice(0%2C40)%2B'...%22)%20has%20fewer%20than%202%20options.%20Nothing%20was%20filled.')%3Bvar%20l%3Dx(i%2Ct(%22__cq_pmode%22).value%2Ct(%22__cq_pts%22).value)%2Cc%3D%5B%5D.concat(l.warn.map(function(t)%7Breturn%22!%20%22%2Bt%7D))%3Bo%3E1%26%26!t(%22__cq_done%22).checked%26%26c.push(%22Done%20is%20always%20clicked%20when%20filling%20several%20questions.%22)%3Bfor(var%20s%3Dt(%22__cq_title%22).value.trim()%2Cp%3D0%2Cd%3Dnull%2Ch%3D0%3Bh%3Co%3Bh%2B%2B)%7Br(%22Question%20%22%2B(h%2B1)%2B%22%20of%20%22%2Bo%2B%22...%22)%3Bvar%20m%3Di%5Bh%5D%3Bif(m.correct.length%7C%7Cc.push(%22Q%22%2B(h%2B1)%2B'%3A%20no%20correct%20answer%20found%20(add%20%22Answer%3A%20C%22)%20-%20first%20choice%20left%20selected.')%2Cm.correct.length%3E1%26%26c.push(%22Q%22%2B(h%2B1)%2B%22%3A%20several%20correct%20answers%20listed%3B%20only%20%22%2BString.fromCharCode(65%2Bm.correct%5B0%5D)%2B%22%20was%20marked.%22)%2Ch%3E0%7C%7C!v())%7Bif(!await%20L())%7Bd%3D%22Could%20not%20add%20a%20new%20question%20automatically%22%2B(0%3D%3D%3Dh%3F%22%20(and%20no%20blank%20question%20is%20open).%22%3A%22.%22)%2B%22%20Click%20the%20blue%20%2B%20and%20choose%20a%20Multiple%20Choice%20question%2C%20then%20press%20Fill%20again%20-%20the%20unfinished%20questions%20are%20still%20in%20the%20box.%22%3Bbreak%7Dawait%20e(500)%7Dvar%20_%3Ds%3Fo%3E1%3Fs%2B%22%20%22%2B(h%2B1)%3As%3A%22%22%2Cy%3Dawait%20F(m%2Cl.units%5Bh%5D%2C_%2Co%3E1)%3Bif((y.notes%7C%7C%5B%5D).forEach(function(t)%7Bc.push(%22Q%22%2B(h%2B1)%2B%22%3A%20%22%2Bt)%7D)%2Cy.fatal)%7Bd%3D%22Q%22%2B(h%2B1)%2B%22%3A%20%22%2By.fatal%2Cy.partial%26%26(p%2B%3D0)%3Bbreak%7Dp%2B%2B%7Dfor(var%20q%3D0%2Ck%3D0%3Bk%3Cp%3Bk%2B%2B)q%2B%3Dl.units%5Bk%5D%3Bif(d)%7Bvar%20E%3Dn.slice(p).map(function(t%2Ce)%7Breturn%20t.split(%22%5Cn%22).filter(function(t)%7Breturn!u.test(t.trim())%7D).join(%22%5Cn%22)%2B%22%5CnPoints%3A%20%22%2Bf(l.units%5Bp%2Be%5D)%7D)%3Bt(%22__cq_txt%22).value%3DE.join(%22%5Cn%5Cn%22)%2Ct(%22__cq_info%22).textContent%3Dw()%7Delse%20t(%22__cq_clr%22).checked%26%26(o%3E1%7C%7Ct(%22__cq_done%22).checked)%26%26(t(%22__cq_txt%22).value%3D%22%22%2Ct(%22__cq_info%22).textContent%3D%22%22)%3Br((d%3F%22Stopped.%20%22%3A%22Finished.%20%22)%2Bp%2B%22%20of%20%22%2Bo%2B%22%20question%22%2B(o%3E1%3F%22s%22%3A%22%22)%2B%22%20completed%20(%22%2Bf(q)%2B%22%20pts).%22%2B(d%3F%22%5Cn!%20%22%2Bd%3A%22%22)%2B(c.length%3F%22%5Cn-%20%22%2Bc.join(%22%5Cn-%20%22)%3A%22%22))%7Delse%20r(%22Paste%20at%20least%20one%20question%20first.%22)%7D().catch(function(t)%7Br(%22Error%3A%20%22%2Bt.message)%7D).then(function()%7B_%3D!1%7D))%7D%7Dfunction%20b(t)%7Bvar%20e%3Dt.replace(%2F%5Cr%2Fg%2C%22%22).split(%22%5Cn%22).map(function(t)%7Breturn%20t.trim()%7D)%2Cn%3D%5B%5D%2Cr%3D%5B%5D%2Ci%3Dnull%2Co%3D!1%2Ca%3D%5B%5D%2Cf%3Dnull%3Be.forEach(function(t)%7Bvar%20e%3Bif(t)if(e%3Dt.match(u))f%3DMath.round(10*parseFloat(e%5B1%5D))%3Belse%7Bif((e%3Dt.match(c))%26%26p(e%5B1%5D))return%20a%3Dp(e%5B1%5D)%2Ci%3Dnull%2Cvoid(o%3D!1)%3Bif(s.test(t))return%20o%3D!0%2Cvoid(i%3Dnull)%3Bif(!o)%7Bif(e%3Dt.match(l))%7Bvar%20d%3De%5B3%5D%2Ch%3D%22*%22%3D%3D%3De%5B1%5D%7C%7C%2F%5E%5C*%7C%5C*%24%7C%5C(correct%5C)%5Cs*%24%2Fi.test(d)%3Breturn%20d%3Dd.replace(%2F%5E%5C*%2B%5Cs*%7C%5Cs*%5C*%2B%24%7C%5Cs*%5C(correct%5C)%5Cs*%24%2Fgi%2C%22%22).trim()%2Ci%3D%7Bletter%3Ae%5B2%5D.toUpperCase()%2Ctext%3Ad%2Cstar%3Ah%7D%2Cvoid%20r.push(i)%7Di%3Fi.text%2B%3D%22%20%22%2Bt%3Ar.length%7C%7Cn.push(t)%7D%7D%7D)%2Ca.length%7C%7C(a%3Dr.filter(function(t)%7Breturn%20t.star%7D).map(function(t)%7Breturn%20t.letter%7D))%3Bvar%20d%3Da.map(function(t)%7Bfor(var%20e%3D0%3Be%3Cr.length%3Be%2B%2B)if(r%5Be%5D.letter%3D%3D%3Dt)return%20e%3Breturn-1%7D).filter(function(t)%7Breturn%20t%3E%3D0%7D)%3Breturn%7Bstem%3An.join(%22%5Cn%22).replace(%2F%5E%5Cd%2B%5B%5C.%5C)%5D%5Cs%2B%2F%2C%22%22)%2Copts%3Ar.map(function(t)%7Breturn%20t.text%7D)%2Ccorrect%3Ad%2Cpts%3Af%7D%7Dfunction%20g(t)%7Bvar%20e%3D%5B%5D%2Cn%3Dnull%2Cr%3D!1%3Breturn%20t.replace(%2F%5Cr%2Fg%2C%22%22).split(%22%5Cn%22).forEach(function(t)%7Bvar%20i%3Dt.trim()%3Bif(i)%7Bvar%20o%2Ca%3D%22text%22%3Bu.test(i)%3Fa%3D%22pts%22%3A(o%3Di.match(c))%26%26p(o%5B1%5D)%3Fa%3D%22ans%22%3As.test(i)%3Fa%3D%22rat%22%3Al.test(i)%26%26(a%3D%22opt%22)%3Bvar%20f%3D%2F%5E%5Cd%2B%5B%5C.%5C)%5D%5Cs%2F.test(i)%3Bif(n)%7Bif(%22text%22%3D%3D%3Da%26%26n.opts%3E%3D2)%7B!(n.rat%26%26!r%26%26!f)%26%26(n.ans%7C%7Cr%7C%7Cf)%26%26(n%3D%7Blines%3A%5B%5D%2Copts%3A0%2Cans%3A!1%2Crat%3A!1%7D%2Ce.push(n))%7D%7Delse%20n%3D%7Blines%3A%5B%5D%2Copts%3A0%2Cans%3A!1%2Crat%3A!1%7D%2Ce.push(n)%3Bn.lines.push(i)%2C%22opt%22%3D%3D%3Da%26%26n.opts%2B%2B%2C%22ans%22%3D%3D%3Da%26%26(n.ans%3D!0)%2C%22rat%22%3D%3D%3Da%26%26(n.rat%3D!0)%2Cr%3D!1%7Delse%20r%3D!0%7D)%2Ce.map(function(t)%7Breturn%20t.lines.join(%22%5Cn%22)%7D)%7Dfunction%20x(t%2Ce%2Cn)%7Bvar%20r%3DMath.round(10*parseFloat(n))%2Ci%3D%5B%5D%3Bif((isNaN(r)%7C%7Cr%3C0)%26%26(r%3D0)%2C%22each%22%3D%3D%3De)return%7Bunits%3At.map(function(t)%7Breturn%20null!%3Dt.pts%3Ft.pts%3Ar%7D)%2Cwarn%3Ai%7D%3Bvar%20o%3D0%2Ca%3D%5B%5D%3Bt.forEach(function(t%2Ce)%7Bnull!%3Dt.pts%3Fo%2B%3Dt.pts%3Aa.push(e)%7D)%3Bvar%20l%3Dt.map(function(t)%7Breturn%20t.pts%7D)%2Cc%3Dr-o%3Bif(a.length)%7Bc%3C0%26%26(i.push('Per-question%20%22Points%3A%22%20lines%20exceed%20the%20total.')%2Cc%3D0)%3Bvar%20s%3DMath.floor(c%2Fa.length)%2Cu%3Dc-s*a.length%3Ba.forEach(function(t%2Ce)%7Bl%5Bt%5D%3Ds%2B(e%3Cu%3F1%3A0)%7D)%2C0%3D%3D%3Ds%26%26i.push(%22Total%20is%20too%20small%20to%20give%20every%20question%20at%20least%200.1%20point.%22)%7Delse%20o!%3D%3Dr%26%26i.push(%22Per-question%20points%20add%20up%20to%20%22%2Bf(o)%2B%22%2C%20not%20%22%2Bf(r)%2B%22.%22)%3Breturn%7Bunits%3Al%2Cwarn%3Ai%7D%7Dfunction%20w()%7Bvar%20e%3Dg(t(%22__cq_txt%22).value).map(b)%3Bif(!e.length)return%22%22%3Bvar%20n%3Dx(e%2Ct(%22__cq_pmode%22).value%2Ct(%22__cq_pts%22).value)%2Cr%3Dn.units.every(function(t)%7Breturn%20t%3D%3D%3Dn.units%5B0%5D%7D)%2Ci%3Dn.units.reduce(function(t%2Ce)%7Breturn%20t%2Be%7D%2C0)%3Breturn%20e.length%2B%22%20question%22%2B(e.length%3E1%3F%22s%22%3A%22%22)%2B%22%20detected%20%7C%20%22%2B(r%3Ff(n.units%5B0%5D)%2B%22%20pt%22%2B(10%3D%3D%3Dn.units%5B0%5D%3F%22%22%3A%22s%22)%2B%22%20each%22%3An.units.map(f).join(%22%2C%20%22))%2B%22%20%7C%20total%20%22%2Bf(i)%2B(n.warn.length%3F%22%5Cn!%20%22%2Bn.warn.join(%22%5Cn!%20%22)%3A%22%22)%7Dfunction%20y(e)%7Bvar%20n%3D%22%22%3Btry%7Be.labels%26%26e.labels.length%26%26(n%2B%3D%22%20%22%2Be.labels%5B0%5D.innerText)%7Dcatch(t)%7B%7Dn%2B%3D%22%20%22%2B(e.getAttribute(%22aria-label%22)%7C%7C%22%22)%2B%22%20%22%2B(e.title%7C%7C%22%22)%3Bvar%20r%3De.getAttribute(%22aria-labelledby%22)%3Breturn%20r%26%26r.split(%2F%5Cs%2B%2F).forEach(function(e)%7Bvar%20r%3Dt(e)%3Br%26%26(n%2B%3D%22%20%22%2Br.innerText)%7D)%2Cn%7Dfunction%20q(t%2Ce)%7Bif(e.test(y(t)))return!0%3Bfor(var%20n%3Dt.parentElement%2Cr%3D0%3Br%3C4%26%26n%3Br%2B%2B%2Cn%3Dn.parentElement)%7Bvar%20i%3D(n.innerText%7C%7C%22%22).trim()%3Bif(i.length%3C40%26%26e.test(i))return!0%7Dreturn!1%7Dfunction%20k(t)%7Bfor(var%20e%2Cn%3Ddocument.createTreeWalker(document.body%2CNodeFilter.SHOW_TEXT)%2Cr%3Dnull%3Be%3Dn.nextNode()%3B)if(t.test(e.nodeValue.trim())%26%26e.parentElement%26%26!d(e.parentElement)%26%26m(e.parentElement))%7Br%3De.parentElement%3Bbreak%7Dreturn%20r%7Dfunction%20E()%7Bvar%20t%3DArray.prototype.slice.call(document.querySelectorAll(%22input%22)).filter(function(t)%7Breturn!d(t)%26%26!t.disabled%26%26m(t)%26%26%5B%22number%22%2C%22text%22%2C%22%22%5D.indexOf((t.type%7C%7C%22%22).toLowerCase())%3E%3D0%7D)%2Ce%3Dt.filter(function(t)%7Breturn%2F%5E%5Cs*points%5Cs*%5C*%3F%5Cs*%24%2Fi.test(y(t).trim())%7D)%5B0%5D%3Breturn%20e%7C%7C(e%3Dt.filter(function(t)%7Breturn%20q(t%2C%2F%5Epoints%24%2Fi)%7D)%5B0%5D)%2Ce%7C%7Cnull%7Dfunction%20A()%7Bvar%20t%3Dfunction()%7Bvar%20t%3D%5B%5D%2Ce%3DE()%2Cn%3Ddocument.querySelectorAll('input%2Ctextarea%2C%5Bcontenteditable%3D%22true%22%5D%2C%5Bcontenteditable%3D%22%22%5D%2C%5Brole%3Dtextbox%5D%2Ciframe')%3Breturn%20Array.prototype.forEach.call(n%2Cfunction(n)%7Bif(!d(n)%26%26n!%3D%3De)%7Bvar%20r%3Dh(n)%3Bif(%22IFRAME%22!%3D%3Dn.tagName)%7Bif(!(r.width%3C20%7C%7Cr.height%3C8))if(%22INPUT%22%3D%3D%3Dn.tagName)%7Bvar%20i%3D(n.type%7C%7C%22text%22).toLowerCase()%3Bif(%5B%22text%22%2C%22search%22%2C%22%22%5D.indexOf(i)%3C0%7C%7Cn.readOnly%7C%7Cn.disabled)return%3Bt.push(%7Bel%3An%2Ckind%3A%22in%22%2Crect%3Ar%7D)%7Delse%20if(%22TEXTAREA%22%3D%3D%3Dn.tagName)%7Bif(n.readOnly%7C%7Cn.disabled)return%3Bt.push(%7Bel%3An%2Ckind%3A%22in%22%2Crect%3Ar%7D)%7Delse%7Bif(n.parentElement%26%26n.parentElement.closest(%22%5Bcontenteditable%5D%22))return%3Bt.push(%7Bel%3An%2Ckind%3A%22ce%22%2Crect%3Ar%7D)%7D%7Delse%20try%7Bvar%20o%3Dn.contentDocument%3Bo%26%26o.body%26%26(o.body.isContentEditable%7C%7C%22on%22%3D%3D%3Do.designMode%7C%7C%22true%22%3D%3D%3Do.body.getAttribute(%22contenteditable%22)%7C%7C%2Fmce-content-body%2F.test(o.body.className))%26%26r.width%3E20%26%26r.height%3E8%26%26t.push(%7Bel%3Ao.body%2Ckind%3A%22ce%22%2Crect%3Ar%7D)%7Dcatch(t)%7B%7D%7D%7D)%2Ct.sort(function(t%2Ce)%7Breturn%20t.rect.top-e.rect.top%7C%7Ct.rect.left-e.rect.left%7D)%2Ct%7D()%2Ce%3DE()%2Cn%3Dk(%2F%5EQuestion%20Stem%2Fi)%2Cr%3Dk(%2F%5EPossible%20answers%2Fi)%2Ci%3De%3Fh(e).top%3A1e9%2Co%3Dnull%2Ca%3Dnull%2Cl%3D%5B%5D%3Bif(n%26%26r)%7Bvar%20c%3Dh(n).bottom-4%2Cs%3Dh(r).bottom-4%3Bl%3Dt.filter(function(t)%7Breturn%20t.rect.top%3E%3Ds%26%26t.rect.top%3Ci%7D)%2Ca%3Dt.filter(function(t)%7Breturn%20t.rect.top%3E%3Dc%26%26t.rect.top%3Cs%7D)%5B0%5D%7C%7Cnull%2Co%3Dt.filter(function(t)%7Breturn%20t.rect.top%3Cc%7D).pop()%7C%7Cnull%7Delse%20if(n)%7Bfor(var%20u%3Dh(n).bottom-4%2Cp%3D0%3Bp%3Ct.length%26%26!(t%5Bp%5D.rect.top%3E%3Du)%3Bp%2B%2B)%3Ba%3Dt%5Bp%5D%7C%7Cnull%2Co%3Dp%3E0%3Ft%5Bp-1%5D%3Anull%2Cl%3Dt.slice(p%2B1).filter(function(t)%7Breturn%20t.rect.top%3Ci%7D)%7Delse%20o%3Dt%5B0%5D%7C%7Cnull%2Ca%3Dt%5B1%5D%7C%7Cnull%2Cl%3Dt.slice(2).filter(function(t)%7Breturn%20t.rect.top%3Ci%7D)%3Breturn%7Btitle%3Ao%2Cstem%3Aa%2Canswers%3Al%2Cpf%3Ae%2ChaveLabels%3A!(!n%7C%7C!r)%7D%7Dfunction%20C(t%2Ce)%7Be.forEach(function(e)%7Bvar%20n%3D%22input%22%3D%3D%3De%26%26window.InputEvent%3FInputEvent%3AEvent%3Bt.dispatchEvent(new%20n(e%2C%7Bbubbles%3A!0%7D))%7D)%7Dfunction%20T(t%2Ce)%7Bvar%20n%3D%22TEXTAREA%22%3D%3D%3Dt.tagName%3FHTMLTextAreaElement.prototype%3AHTMLInputElement.prototype%3BObject.getOwnPropertyDescriptor(n%2C%22value%22).set.call(t%2Ce)%2CC(t%2C%5B%22input%22%2C%22change%22%5D)%7Dfunction%20S(t%2Ce)%7Bvar%20n%3Dt.el%3Bif(%22in%22%3D%3D%3Dt.kind)return%20n.focus()%2Cvoid%20T(n%2Ce)%3Bvar%20r%3Dn.ownerDocument%3Bn.focus()%3Btry%7Bvar%20i%3Dr.defaultView.getSelection()%2Co%3Dr.createRange()%3Bo.selectNodeContents(n)%2Ci.removeAllRanges()%2Ci.addRange(o)%2Cr.execCommand(%22delete%22)%2Ce.split(%22%5Cn%22).forEach(function(t%2Ce)%7Be%26%26r.execCommand(%22insertParagraph%22)%2Ct%26%26r.execCommand(%22insertText%22%2C!1%2Ct)%7D)%7Dcatch(t)%7B%7D(n.innerText%7C%7C%22%22).trim()%7C%7C(n.innerHTML%3De.split(%22%5Cn%22).map(function(t)%7Breturn%22%3Cp%3E%22%2B(t.replace(%2F%26%2Fg%2C%22%26amp%3B%22).replace(%2F%3C%2Fg%2C%22%26lt%3B%22).replace(%2F%3E%2Fg%2C%22%26gt%3B%22)%2B%22%3C%2Fp%3E%22)%7D).join(%22%22))%2CC(n%2C%5B%22input%22%2C%22keyup%22%2C%22change%22%5D)%7Dfunction%20M()%7Breturn%20Array.prototype.slice.call(document.querySelectorAll(%22button%2Ca%2C%5Brole%3Dbutton%5D%22)).filter(function(t)%7Breturn!d(t)%26%26m(t)%7D)%7Dfunction%20%24(t)%7Breturn((t.innerText%7C%7C%22%22)%2B%22%20%22%2B(t.getAttribute(%22aria-label%22)%7C%7C%22%22)%2B%22%20%22%2B(t.title%7C%7C%22%22)).trim()%7Dasync%20function%20D()%7Bvar%20t%3DM().filter(function(t)%7Breturn%2F%5E%5C%2B%3F%5Cs*Answer%24%2Fi.test((t.innerText%7C%7C%22%22).trim())%7C%7C%2F%5Eadd%20(an%20)%3Fanswer%2Fi.test(%24(t))%7D)%5B0%5D%3Breturn!!t%26%26(t.click()%2Cawait%20e(450)%2C!0)%7Dasync%20function%20N(t)%7Bvar%20n%3Dt.rect.top%2Bt.rect.height%2F2%2Cr%3DM().filter(function(e)%7Bvar%20r%3Dh(e)%2Ci%3Dr.top%2Br.height%2F2%3Breturn%2Fdelete%7Cremove%7Ctrash%2Fi.test(%24(e))%26%26Math.abs(i-n)%3C25%26%26r.left%3Et.rect.right-5%7D)%5B0%5D%3Bif(!r)return!1%3Br.click()%2Cawait%20e(450)%3Bvar%20i%3DArray.prototype.slice.call(document.querySelectorAll(%22%5Brole%3Ddialog%5D%20button%2C%5Brole%3Dalertdialog%5D%20button%22)).filter(function(t)%7Breturn%2F%5E(delete%7Cremove%7Cyes%7Cok%7Cconfirm)%2Fi.test((t.innerText%7C%7C%22%22).trim())%7D)%5B0%5D%3Breturn%20i%26%26(i.click()%2Cawait%20e(400))%2C!0%7Dfunction%20P(t)%7Breturn%20Array.prototype.slice.call(document.querySelectorAll(%22input%5Btype%3Dcheckbox%5D%22)).filter(function(e)%7Breturn!d(e)%26%26q(e%2Ct)%7D)%5B0%5D%7C%7Cnull%7Dasync%20function%20Q(t%2Cn)%7Bfor(var%20r%3D0%3Br%3Cn%3Br%2B%3D250)%7Bif(t())return!0%3Bawait%20e(250)%7Dreturn%20t()%7Dasync%20function%20L()%7Bvar%20t%3DM().filter(function(t)%7Breturn%2F(add%7Cnew%7Cinsert%7Ccreate)%5Cs%2B(a%5Cs%2B)%3F(new%5Cs%2B)%3F(question%7Citem%7Ccontent)%7C%5E%5C%2B%24%2Fi.test(%24(t))%7D)%3Bif(t.length%7C%7C(t%3DM().filter(function(t)%7Bvar%20e%3Dh(t)%2Cn%3DgetComputedStyle(t)%3Breturn!(t.innerText%7C%7C%22%22).trim()%26%26e.width%3E%3D20%26%26e.width%3C%3D48%26%26Math.abs(e.width-e.height)%3C6%26%26parseFloat(n.borderRadius)%3E%3D10%7D))%2C!t.length)return!1%3Bt.sort(function(t%2Ce)%7Breturn%20h(e).top-h(t).top%7D)%3Bvar%20n%3Dt%5B0%5D%3Bif(n.scrollIntoView%26%26n.scrollIntoView(%7Bblock%3A%22center%22%7D)%2Cawait%20e(150)%2Cn.click()%2Cawait%20e(600)%2Cv())return!0%3Bvar%20r%3DArray.prototype.slice.call(document.querySelectorAll(%22%5Brole%3Dmenuitem%5D%2C%5Brole%3Dmenuitemradio%5D%2C%5Brole%3Doption%5D%2Cli%2Cbutton%2Ca%22)).filter(function(t)%7Breturn!d(t)%26%26m(t)%26%26(t.innerText%7C%7C%22%22).trim().length%3C40%26%26%2F%5Enew%20question%24%7C%5Equestion%24%7C%5Eadd%20(a%20)%3F(new%20)%3Fquestion%24%2Fi.test((t.innerText%7C%7C%22%22).trim())%7D)%5B0%5D%3Bif(r%26%26(r.click()%2Cawait%20e(600))%2Cawait%20Q(v%2C4e3))return!0%3Bvar%20i%3DArray.prototype.slice.call(document.querySelectorAll(%22%5Brole%3Dmenuitem%5D%2C%5Brole%3Dmenuitemradio%5D%2C%5Brole%3Doption%5D%2Cli%2Cbutton%2Ca%22)).filter(function(t)%7Breturn!d(t)%26%26m(t)%26%26%2F%5Emultiple%20choice%24%2Fi.test((t.innerText%7C%7C%22%22).trim())%7D)%5B0%5D%3Breturn%20i%26%26i.click()%2Cawait%20Q(v%2C4e3)%7Dasync%20function%20F(n%2Cr%2Ci%2Co)%7Bvar%20a%3D%5B%5D%2Cl%3DA()%3Bif(l.stem%7C%7C(await%20async%20function()%7Bvar%20t%3Dk(%2F%5EQuestion%20Stem%2Fi)%3Bif(t)%7Bvar%20n%3Dh(t)%2Cr%3Ddocument.elementFromPoint(n.left%2B60%2Cn.bottom%2B16)%3Br%26%26!d(r)%26%26(%5B%22mousedown%22%2C%22mouseup%22%2C%22click%22%5D.forEach(function(t)%7Br.dispatchEvent(new%20MouseEvent(t%2C%7Bbubbles%3A!0%2Ccancelable%3A!0%7D))%7D)%2Cr.focus%26%26r.focus()%2Cawait%20e(900))%7D%7D()%2Cl%3DA())%2C!l.stem)%7Bvar%20c%3Dk(%2F%5EQuestion%20Stem%2Fi)%2Cs%3D%22%22%3Bif(c)%7Bvar%20u%3Dh(c)%2Cp%3Ddocument.elementFromPoint(u.left%2B60%2Cu.bottom%2B16)%3Bp%26%26(s%3Dp.tagName%2B(p.className%26%26%22string%22%3D%3Dtypeof%20p.className%3F%22.%22%2Bp.className.split(%2F%5Cs%2B%2F)%5B0%5D%3A%22%22)%2B(p.id%3F%22%23%22%2Bp.id%3A%22%22))%7Dreturn%7Bfatal%3A%22Could%20not%20find%20the%20Question%20Stem%20editor%2C%20so%20nothing%20was%20filled%20for%20this%20question.%20Diagnostic%3A%20labels%20%22%2B(l.haveLabels%3F%22found%22%3A%22not%20all%20found%22)%2B%22%2C%20element%20at%20stem%20box%20%3D%20%22%2B(s%7C%7C%22none%22)%2B%22.%22%7D%7Dtry%7Bl.stem.el.focus()%7Dcatch(t)%7B%7Dif(await%20e(300)%2C!(l%3DA()).stem)return%7Bfatal%3A%22Stem%20editor%20disappeared%20after%20focusing%20it%20-%20nothing%20was%20filled%20for%20this%20question.%22%7D%3Bi%26%26l.title%26%26S(l.title%2Ci)%2CS(l.stem%2Cn.stem)%2Cawait%20e(150)%3Bfor(var%20_%3D0%3Bl.answers.length%3Cn.opts.length%26%26_%2B%2B%3C10%26%26await%20D()%3B)l%3DA()%3Bfor(_%3D0%3Bl.answers.length%3En.opts.length%26%26_%2B%2B%3C10%26%26await%20N(l.answers%5Bl.answers.length-1%5D)%3B)l%3DA()%3Bl.answers.length%3Cn.opts.length%26%26a.push(%22Only%20%22%2Bl.answers.length%2B%22%20answer%20boxes%20found%20for%20%22%2Bn.opts.length%2B%22%20options.%22)%2Cl.answers.length%3En.opts.length%26%26a.push(l.answers.length-n.opts.length%2B%22%20extra%20empty%20answer%20box(es)%20left%20-%20delete%20by%20hand.%22)%3Bfor(var%20b%3D0%3Bb%3CMath.min(l.answers.length%2Cn.opts.length)%3Bb%2B%2B)S(l.answers%5Bb%5D%2Cn.opts%5Bb%5D)%2Cawait%20e(40)%3Bif(n.correct.length%26%26l.answers%5Bn.correct%5B0%5D%5D)%7Bvar%20g%3Dfunction(t)%7Bfor(var%20e%3Dt.el.parentElement%2Cn%3D0%3Bn%3C8%26%26e%3Bn%2B%2B%2Ce%3De.parentElement)%7Bvar%20r%3De.querySelectorAll(%22input%5Btype%3Dradio%5D%22)%3Bif(1%3D%3D%3Dr.length%26%26!d(r%5B0%5D))return%20r%5B0%5D%3Bif(r.length%3E1)break%7Dvar%20i%3Dt.rect.top%2Bt.rect.height%2F2%2Co%3Dnull%2Ca%3D1e9%3Breturn%20Array.prototype.forEach.call(document.querySelectorAll(%22input%5Btype%3Dradio%5D%22)%2Cfunction(t)%7Bif(!d(t)%26%26!t.disabled)%7Bvar%20e%3Dm(t)%3Ft%3At.closest(%22label%22)%7C%7Ct.parentElement%2Cn%3Dh(e)%2Cr%3DMath.abs(n.top%2Bn.height%2F2-i)%3Br%3Ca%26%26(a%3Dr%2Co%3Dt)%7D%7D)%2Ca%3C60%3Fo%3Anull%7D(l.answers%5Bn.correct%5B0%5D%5D)%3Bg%3F(g.checked%7C%7Cg.click()%2Cawait%20e(100)%2Cg.checked%7C%7Ca.push(%22Could%20not%20confirm%20the%20correct-answer%20radio%20button.%22))%3Aa.push(%22Could%20not%20find%20the%20correct-answer%20radio%20button.%22)%7Dvar%20x%2Cw%3DE()%3Bif(w%3Ffunction(t%2Ce)%7Bif(e%3DString(e)%2Ct.focus()%2CT(t%2Ce)%2Ct.value!%3D%3De)try%7Bt.select()%2Ct.ownerDocument.execCommand(%22insertText%22%2C!1%2Ce)%7Dcatch(t)%7B%7Dreturn%20C(t%2C%5B%22change%22%5D)%2Ct.blur()%2Ct.value%3D%3D%3De%7D(w%2Cf(r))%7C%7Ca.push(%22Points%20box%20would%20not%20accept%20%22%2Bf(r)%2B%22%20-%20check%20it.%22)%3Aa.push(%22Points%20field%20not%20found.%22)%2Ct(%22__cq_shuf%22).checked)%7Bvar%20y%3DP(%2Fshuffle%2Fi)%3Bif(!y)%7Bvar%20q%3D(x%3D%2F%5EOptions%24%2Fi%2CM().filter(function(t)%7Breturn%20x.test(%24(t))%7D)%5B0%5D%7C%7Cnull)%3Bq%26%26(q.click()%2Cawait%20e(400)%2Cy%3DP(%2Fshuffle%2Fi))%7Dy%3Fy.checked%7C%7Cy.click()%3Aa.push('%22Shuffle%20Choices%22%20checkbox%20not%20found.')%7Dvar%20L%3D!1%3Bif(t(%22__cq_done%22).checked%7C%7Co)%7Bawait%20e(250)%3Bvar%20F%3DM().filter(function(t)%7Breturn%2F%5EDone%24%2Fi.test((t.innerText%7C%7C%22%22).trim())%7D)%5B0%5D%3Bif(F)%7Bif(F.click()%2CL%3D!0%2C!await%20Q(function()%7Breturn!v()%7D%2C3500))%7Bif(o)return%7Bfatal%3A%22Done%20was%20clicked%20but%20the%20question%20did%20not%20close%20(likely%20a%20red%20validation%20error%20on%20the%20form).%20Fix%20it%2C%20then%20Fill%20again%20-%20the%20unfinished%20questions%20are%20still%20in%20the%20box.%22%2Cnotes%3Aa%2Cpartial%3A!0%7D%3Ba.push(%22Done%20was%20clicked%20but%20the%20form%20still%20looks%20open%20-%20check%20for%20a%20red%20error.%22)%7D%7Delse%7Bif(o)return%7Bfatal%3A'%22Done%22%20button%20not%20found.'%2Cnotes%3Aa%2Cpartial%3A!0%7D%3Ba.push('%22Done%22%20button%20not%20found%20-%20click%20it%20by%20hand.')%7D%7Dreturn%7Bnotes%3Aa%2Cfinished%3AL%7D%7D%7D()%3B" draggable="true">Canvas Question Filler</a>
+    <span>&#8592; drag this to your bookmarks bar</span>
+  </div>
+  <div id="status" role="status"></div>
+  <details>
+    <summary>Dragging does not work (Chromebook, school-managed browser, Safari)</summary>
+    <ol>
+      <li>Right-click your bookmarks bar and choose <b>Add page</b> (Edge: <b>Add favorite</b>).</li>
+      <li>Name it <b>Canvas Question Filler</b>.</li>
+      <li>Click the button below to copy the bookmark code: <button class="btn ghost" id="copyCode" type="button">Copy bookmark code</button></li>
+      <li>Click into the <b>URL</b> box in the bookmark window, paste (<kbd>Ctrl</kbd> + <kbd>V</kbd>), and click <b>Save</b>.</li>
+    </ol>
+  </details>
+</section>
+
+<section class="card">
+  <h2>Step 2: Build your questions</h2>
+  <ol>
+    <li>Log in to Canvas and open your quiz so you are on the <b>Build</b> tab. You can leave the page as it is, or click the blue <b>+</b> yourself and start a blank <b>Multiple Choice</b> question. The tool will add new questions on its own when it needs them.</li>
+    <li>Open the <b>Canvas Question Filler</b> on your bookmarks bar. A box will appear on the right side of the screen. You can drag the green bar to move it, and click it to collapse it.</li>
+    <li>Simply paste your questions into the big white box (format below).</li>
+    <li>Choose your <b>points</b> (see below), then click <b>Fill</b>. For each question, the tool fills in the question and choices, selects the correct answer, sets the points, checks <b>Shuffle Choices</b>, and clicks <b>Done</b>. Then it moves on to the next one.</li>
+    <li><b>Check it.</b> Read each question, make sure the right answer is marked, and edit anything you like by clicking the pencil icon on a question.</li>
+    <li>When you are happy with the quiz, publish it in Canvas as usual.</li>
+  </ol>
+  <div class="hint">If the box ever goes away (for example after the page reloads), just click the bookmark again to make it pop back up.</div>
+  <div class="hint">Want to look at a single question before it is saved? Uncheck <b>Click Done when finished</b> and the tool will leave that question open for you.</div>
+</section>
+
+<section class="card">
+  <h2>How to write the questions</h2>
+  <p>Put the question first, then the choices, then the answer. To add more questions, just keep going with a blank line between them. Each question ends with its Answer line.</p>
+<pre id="example">Which organelle is known as the powerhouse of the cell?
+A. Ribosome
+B. Mitochondrion
+C. Golgi apparatus
+D. Lysosome
+Answer: B
+
+Which group of organic compounds includes enzymes?
+A. Lipids
+B. Carbohydrates
+C. Proteins
+D. Nucleic acids
+Answer: C
+Points: 2</pre>
+  <p><button class="btn ghost" id="copyEx" type="button">Copy this example</button></p>
+  <ul>
+    <li><b>Choices</b> start with a letter and a period or parenthesis: <code>A.</code> or <code>A)</code>. Canvas starts with 4 answer boxes, and the tool adds or removes boxes to match how many choices you wrote. Up to 8 choices.</li>
+    <li><b>Answer:</b> type <code>Answer: C</code>. These are multiple choice questions, so there is one correct answer per question.</li>
+    <li>You can instead put a star at the start of the correct choice, like <code>*C. Proteins</code>, or at the end, like <code>C. Proteins *</code></li>
+    <li><b>Points:</b> an optional line like <code>Points: 2</code> sets the points for just that question (see the next section).</li>
+    <li>A question number at the start (like <code>1.</code>) is ignored.</li>
+    <li>Rationale lines (like <code>Rationale A: ...</code>) are skipped, since this tool does not fill in answer feedback. They will not cause any trouble if you leave them in.</li>
+  </ul>
+  <div class="hint"><b>Tip: you can ask an AI assistant to write questions for you in exactly this format, then paste a whole set at once.</b> Use the <b>Copy Question Template</b> button in the tool to give the AI the format. For very large tests, you may also want to look at Canvas's own import options.</div>
+</section>
+
+<section class="card">
+  <h2>Setting the points</h2>
+  <p>The <b>Points</b> menu in the tool has two choices, and point values can go down to <b>0.1</b>:</p>
+  <ul>
+    <li><b>each question</b> gives every question the same number of points. Type <code>1</code> and every question is worth 1 point.</li>
+    <li><b>total for all</b> makes the quiz add up to the number you type. Ten questions with a total of <code>20</code> are worth 2 points each. If it does not divide evenly, the leftover tenths go to the first questions, so 3 questions with a total of <code>10</code> come out to 3.4, 3.3, and 3.3 (always adding up to exactly 10).</li>
+    <li>A <code>Points: 2.5</code> line inside any question overrides the menu for that question. In <b>total for all</b>, the overridden questions are taken out first, and the rest share whatever points are left.</li>
+  </ul>
+  <p>Under the input box, the tool shows you what it found, like <code>3 questions detected | 3.8, 3.7, 2.5 | total 10</code>, so you can see the points before you click <b>Fill</b>.</p>
+</section>
+
+<section class="card">
+  <h2>The other buttons and options:</h2>
+  <ul>
+    <li><b>Copy Question Template</b> copies a blank question in the right format to your clipboard, ready to paste into the box, a document, or an AI assistant.</li>
+    <li><b>Title prefix</b> is optional. If you type <code>Bio</code>, your questions are titled Bio 1, Bio 2, Bio 3, and so on. Leave it blank for no titles.</li>
+    <li><b>Shuffle choices</b> checks the Shuffle Choices box on every question, so answer order is mixed up for each student.</li>
+    <li><b>Click Done when finished</b> saves each question. When you paste several questions, the tool always clicks Done, because it needs to in order to move on to the next one.</li>
+    <li><b>Clear box after</b> empties the input box once everything has been built. If the tool stops partway, it keeps the unfinished questions in the box instead.</li>
+    <li><b>Close</b> removes the tool from the page. Click the bookmark again to bring it back.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>Fixing problems</h2>
+  <details>
+    <summary>I click the bookmark and nothing happens</summary>
+    <p>Make sure you are on the <b>Build</b> tab of a New Quiz. Some school-managed browsers block bookmark tools. If yours does, send this page's link to your campus tech contact and ask them to allow it.</p>
+  </details>
+  <details>
+    <summary>The tool says it cannot find the Question Stem or the question fields</summary>
+    <p>Click the blue <b>+</b> yourself, start a blank <b>Multiple Choice</b> question so you can see the <b>Question Stem</b> box, and click <b>Fill</b> again. If it still cannot find it, the quiz may be loading inside a frame the bookmark cannot reach. In Chrome, right-click an empty spot in the quiz area, choose <b>This Frame</b>, then <b>Open frame in new tab</b>, and click the bookmark in that new tab.</p>
+  </details>
+  <details>
+    <summary>The tool stopped partway through my questions</summary>
+    <p>The tool tells you why. The questions it already built stay in your quiz, and the ones it did not get to stay in the box with their points already set. Fix the problem (a common one is a red error message on the open question, like a blank answer), click the blue <b>+</b> and choose a Multiple Choice question if it could not add one, and click <b>Fill</b> again.</p>
+  </details>
+  <details>
+    <summary>It could not add a new question by itself</summary>
+    <p>Click the blue <b>+</b> at the bottom of your question list yourself, pick a <b>Multiple Choice</b> question, and click <b>Fill</b> again. The questions that were not built yet are still in the box.</p>
+  </details>
+  <details>
+    <summary>The correct answer is not selected, or the points are wrong</summary>
+    <p>Click the circle next to the right answer yourself, or type the points into the <b>Points</b> box at the bottom of the question. Always check these before publishing. The tool also writes a note under its buttons whenever it could not do one of these steps.</p>
+  </details>
+  <details>
+    <summary>I have fewer than 4 choices, or there are extra empty answer boxes</summary>
+    <p>The tool removes extra boxes when it can. If an empty box is left over, it tells you. Delete it with the trash can icon next to it, since Canvas will not save a question with a blank answer.</p>
+  </details>
+  <details>
+    <summary>Some of my points are not what I expected</summary>
+    <p>Look at the line under the input box before you click <b>Fill</b>. It lists the points for every question. Check that the menu says <b>each question</b> or <b>total for all</b> the way you meant it, and look for any <code>Points:</code> lines in your questions.</p>
+  </details>
+</section>
+
+</main>
+<script>
+(function(){
+  var bm=document.getElementById('bm'), status=document.getElementById('status');
+  var code=bm.getAttribute('href');
+  bm.addEventListener('click',function(e){
+    e.preventDefault();
+    status.textContent='Do not click it here. Drag the button up to your bookmarks bar and let go.';
+  });
+  bm.addEventListener('dragstart',function(){status.textContent='';});
+  function copy(text,btn,done){
+    function ok(){var o=btn.textContent;btn.textContent=done;setTimeout(function(){btn.textContent=o;},2000);}
+    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(ok,fallback);}else{fallback();}
+    function fallback(){
+      var t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';
+      document.body.appendChild(t);t.select();
+      try{document.execCommand('copy');ok();}catch(e){btn.textContent='Copy failed';}
+      document.body.removeChild(t);
+    }
+  }
+  document.getElementById('copyCode').addEventListener('click',function(){copy(code,this,'Copied!');});
+  document.getElementById('copyEx').addEventListener('click',function(){copy(document.getElementById('example').textContent,this,'Copied!');});
+})();
+</script>
+</body>
+</html>

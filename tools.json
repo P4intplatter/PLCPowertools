@@ -39,7 +39,7 @@
       "version": "1.0",
       "updated": "2026-11-26",
       "changelog": "New!",
-      "note": "Use this tool to automate building a Canvas Quiz.    MUCH faster than by hand.",
+      "note": "Use this tool to automate building a Canvas Quiz.",
       "icon": "circular_saw"
     },
     {
@@ -52,7 +52,7 @@
       "version": "2.1",
       "updated": "2026-11-22",
       "changelog": "First release.",
-      "note": "Use this tool to manage multiple sections.",
+      "note": "Use this tool to manage test data from multiple sections.",
       "icon": "glue"
     },
     {

@@ -67,14 +67,16 @@ ul{list-style:none;margin:8px 0 0;padding:0}li{padding:5px 0;border-top:1px soli
 .lb{display:inline-block;background:var(--ac2);color:var(--moss-deep);border-radius:4px;padding:0 7px;margin:1px 4px 1px 0;font-size:13px}.lb.on{outline:2px solid var(--ac)}
 .sc{display:inline-block;min-width:32px;text-align:center;border:1px solid var(--bd);border-radius:3px;font-size:12px;font-weight:600;margin:1px 3px 1px 0}.sc.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 .og{font-size:14px}.pt tr.s1 td{border-top:2px solid var(--mu)}.dl{margin-top:6px;padding-left:10px;border-left:3px solid var(--ac2)}.dl div{padding:3px 0}
-@media print{.bar,.tabs,#tg,#drop,#errbox,#xbox{display:none}.g{border-color:#999}}
+#tu.warn{border-color:#f0b070;box-shadow:0 0 8px 3px rgba(255,170,80,.45)}
+@media print{.how,.bar,.tabs,#tg,#drop,#errbox,#xbox{display:none}.g{border-color:#999}}
 </style></head><body><header class="top"><h1>Accommodation Report Builder</h1>
-<div class="sub">1. Log into the SSO and Frontline in another tab, or input a folder of 504 Teacher Bundle, LPAC and eSPED PDFs to be temporarily loaded in the browser.<br><br>2. Filter the loaded files by Subject: Select MA for Math, RLA for Reading and Language Arts, SCI for Science... 
-<br><br>3. Adress any unresolved accomodations with uncoommon language using the "Unsorted" button <br><br>4. Filter by accommodation: select an field to filter by and print necessary reports. <br>Use "Export Full Mods and Accomms at-a-glance" to generate a full spreadsheet of supports needed for the classroom, with separate tabs for Test Days and Hard Copy of Notes documentation.<br>Folders and PDFs are cleared upon closing the browser window.</div></header>
+</header>
 <main>
+<section class="bar how"><h2 style="margin:0 0 8px;font-size:18px">How to use this tool</h2><div class="mu" style="line-height:1.6">1. Log into the SSO and Frontline in another tab, or input a folder of 504 Teacher Bundle, LPAC and eSPED PDFs to be temporarily loaded in the browser.<br>2. Filter the loaded files by Subject: Select MA for Math, RLA for Reading and Language Arts, SCI for Science... 
+ <br>3. Adress any unresolved accomodations with uncoommon language using the "Unsorted" button <br>4. Filter by accommodation: select an field to filter by and print necessary reports. <br>Use "Export Full Mods and Accomms at-a-glance" to generate a full spreadsheet of supports needed for the classroom, with separate tabs for Test Days and Hard Copy of Notes documentation.<br>Folders and PDFs are cleared upon closing the browser window.</div></section>
 <div class="bar">
-<div class="row"><button class="p" id="bf">Choose folder</button>
-<button class="p" id="bfl" title="Pull the PDFs straight from Frontline">Get from Frontline</button>
+<div class="row"><button class="p" id="bfl" title="Pull the PDFs straight from Frontline">Get from Frontline</button>
+<button class="p" id="bf">Choose folder</button>
 <input type="file" id="fi" webkitdirectory hidden>
 <span id="st" class="mu">No files scanned yet.</span></div>
 <div id="flok" class="mu" style="margin-top:10px" hidden>✓ Bookmark already set up. <a href="#" id="flshow">Show setup steps</a></div>
@@ -287,7 +289,7 @@ function groups(rows){
  }));
  return[...m.values()].sort((a,b)=>a.student.localeCompare(b.student)||(a.l==='Unsorted')-(b.l==='Unsorted')||a.l.localeCompare(b.l));
 }
-const chipsOf=(set,small)=>SUBS.concat(['PE','FA']).filter(z=>set.has(z)).map(z=>`<span class="sc${SUBJ.has(z)?' on':''}">${z}</span>`).join('');
+const chipsOf=(set,small)=>SUBS.concat(['PE','FA']).filter(z=>set.has(z)&&(!SUBJ.size||SUBJ.has(z))).map(z=>`<span class="sc${SUBJ.has(z)?' on':''}">${z}</span>`).join('');
 const itemH=r=>`<div>${esc(r.desc)} <small class="mu">· ${esc(r.sec)}</small> ${chipsOf(new Set(r.subj))}</div>`;
 function vPrev(rows){
  if(!hasSel())return'<p class="mu">Pick a subject, an accommodation, or search a student to build the preview.</p>';
@@ -322,7 +324,7 @@ function render(){
  $('#subs').innerHTML=SUBS.map(s=>`<button class="sq${SUBJ.has(s)?' on':''}" data-s="${s}" title="${SN[s]}">${s}</button>`).join('');
  $('#accs').innerHTML=ls.map(l=>`<button class="ch${ACC.has(l)?' on':''}" data-a="${esc(l)}">${esc(l)}</button>`).join('')||'<span class="mu">none found</span>';
  $('#tg').hidden=$('#sg').hidden=VIEW==='uns';
- $('#tu').textContent='Unsorted ('+Object.keys(unsorted()).length+')';
+ {const nu=Object.keys(unsorted()).length;$('#tu').textContent='Unsorted ('+nu+')';$('#tu').classList.toggle('warn',nu>0)}
  document.querySelectorAll('.tabs button[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===VIEW));
  $('#lbls').innerHTML=[...new Set([...RULES.map(r=>r.l),...Object.values(custom)])].sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:'base'})).map(l=>`<option value="${esc(l)}">`).join('');
  $('#out').innerHTML=VIEW==='uns'?vUns():vPrev(vis());

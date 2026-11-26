@@ -20,7 +20,7 @@
       "id": "question-filler",
       "toolbox": "plc",
       "title": "Eduphoria Question Filler",
-      "description": "Quickly fills an Eduphoria Multiple Choice (or multiple answer) question with a single copy/paste.",
+      "description": "Quickly fills an Eduphoria Multiple Choice (or multiple answer) test question with a single copy/paste.",
       "category": "Content Creation",
       "file": "tools/question-filler.html",
       "version": "1.1",

@@ -8,11 +8,14 @@
 ![Runs in browser](https://img.shields.io/badge/runs%20in-your%20browser-orange)
 </div>
 
-**Free classroom tools that run right in your browser.**
+<div align="center">
+  <h1>**Free classroom tools that run right in your browser.**</h1>
+  <p>*Stop trying to do everything by hand. You can't turn single teachers into whole factories.*
+    
+*Simple. Efficient. Take back your time.* </p>
+</div>
 
-*Stop trying to do everything by hand. You can't turn single teachers into whole factories.*
 
-*Simple. Efficient. Take back your time.*
 
 
 

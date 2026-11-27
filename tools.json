@@ -30,19 +30,6 @@
       "icon": "table_saw"
     },
     {
-      "id": "canvas-filler",
-      "toolbox": "teacher",
-      "title": "Canvas Question Filler",
-      "description": "Quickly fills Canvas New Quiz questions with a single bulk copy/paste.",
-      "category": "Content Creation",
-      "file": "tools/canvas-filler.html",
-      "version": "1.0",
-      "updated": "2026-11-26",
-      "changelog": "New!",
-      "note": "Use this tool to automate building a Canvas Quiz.",
-      "icon": "circular_saw"
-    },
-    {
       "id": "score-merger",
       "toolbox": "teacher",
       "title": "Test Score Merger",
@@ -58,7 +45,7 @@
     {
       "id": "missed-it",
       "toolbox": "teacher",
-      "title": "Missed It! Generator",
+      "title": "Eduphoria Missed It! Generator",
       "description": "Builds a one-page report for students with the questions they missed, using an Eduphoria export and a blank test PDF.",
       "category": "Student Feedback",
       "file": "tools/missed-it.html",
@@ -68,7 +55,20 @@
       "note": "Use this tool to tell students what they missed on Eduphoria Tests.",
       "icon": "hammer"
     },
-      {
+    {
+      "id": "canvas-filler",
+      "toolbox": "teacher",
+      "title": "Canvas Question Filler",
+      "description": "Quickly fills Canvas New Quiz questions with a single bulk copy/paste.",
+      "category": "Content Creation",
+      "file": "tools/canvas-filler.html",
+      "version": "1.0",
+      "updated": "2026-11-26",
+      "changelog": "New!",
+      "note": "Use this tool to build Canvas Quizzes FASTER!",
+      "icon": "circular_saw"
+    }, 
+    {
       "id": "accommodation-tracker",
       "toolbox": "teacher",
       "title": "Accommodation Report Builder",

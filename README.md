@@ -10,8 +10,8 @@
 [![Open the Tools](https://img.shields.io/badge/Open%20the%20Tools-Live%20Site-2ea44f?style=for-the-badge)](https://p4intsplatter.github.io/PLCPowertools/)
 ![Runs in browser](https://img.shields.io/badge/runs%20in-your%20browser-orange)
 </div>
----
-> *Stop trying to do everything by hand. You can't turn single teachers into whole factories.*
+
+*Stop trying to do everything by hand. You can't turn single teachers into whole factories.*
 
 ## 📖 About
 

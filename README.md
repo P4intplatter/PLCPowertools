@@ -21,7 +21,7 @@
 
 Howdy, I'm Ryan Graham and I teach Bio at the high school level. I built these tools **by a teacher, for teachers**, to help my PLC do less admin busywork and spend more time **actually teaching**. I wanted to streamline the way we review assessment data and to better accommodate our ever-growing, diverse student populations.
 
-<div align="center"> ***They don't pay teachers enough to be data analysts too!*** </div>
+<div align="center"> <b>They don't pay teachers enough to be data analysts too!</b> </div>
 
 ## 🧰 The Tools Themselves
 

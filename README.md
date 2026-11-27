@@ -11,7 +11,7 @@
 <div align="center">
   <p><b>Free classroom tools that run right in your browser.</b><br>
   Stop trying to do everything by hand. You can't turn single teachers into whole factories.<br>
-    <i>Simple. Efficient. Take back your time.</i>i> </p>
+    <i>Simple. Efficient. Take back your time.</i></p>
 </div>
 
 

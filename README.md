@@ -9,9 +9,9 @@
 </div>
 
 <div align="center">
-  <h1>Free classroom tools that run right in your browser.</h1>
-  <p><b>Stop trying to do everything by hand. You can't turn single teachers into whole factories.</b>*
-    *Simple. Efficient. Take back your time.* </p>
+  <p><b>Free classroom tools that run right in your browser.</b>
+  Stop trying to do everything by hand. You can't turn single teachers into whole factories.
+    </i>Simple. Efficient. Take back your time.<i> </p>
 </div>
 
 
